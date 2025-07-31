@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=\, initial-scale=1.0, user-scalable=no">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#317EFB">
+
   <title>Document</title>
   <style>
     body {
@@ -125,6 +128,15 @@
 
     });
   </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('Service Worker zarejestrowany'))
+        .catch(err => console.error('Błąd rejestracji SW:', err));
+    }
+  </script>
+
 </body>
 
 </html>
