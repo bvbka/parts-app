@@ -1,7 +1,7 @@
 {
   "name": "Moja Apka",
   "short_name": "Apka",
-  "start_url": "/",
+  "start_url": "/public/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#317EFB",
