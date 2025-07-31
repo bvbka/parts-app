@@ -4,10 +4,10 @@
 //$pass = '';
 //$db   = 'tasks_app';
 
-$host = getenv("MYSQLHOST");
-$user = getenv("MYSQLUSER");
-$pass = getenv("MYSQLPASSWORD");
-$db   = getenv("MYSQLDATABASE");
+$host = "mysql.railway.internal";
+$user = "root";
+$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+$db   = "railway";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
