@@ -1,10 +1,10 @@
 <?php
 session_start(); // <--- dodaj na początku
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db   = 'tasks_app';
+$host = "mysql.railway.internal";
+$user = "root";
+$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+$db   = "railway";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
