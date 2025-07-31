@@ -6,10 +6,10 @@ if (!isset($_SESSION['user'])) {
 }
 $alias = $_SESSION['user'];
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db   = 'tasks_app';
+$host = "mysql.railway.internal";
+$user = "root";
+$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+$db   = "railway";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
