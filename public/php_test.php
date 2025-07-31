@@ -1,8 +1,13 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db   = 'tasks_app';
+//$host = 'localhost';
+//$user = 'root';
+//$pass = '';
+//$db   = 'tasks_app';
+
+$host = getenv("MYSQLHOST");
+$user = getenv("MYSQLUSER");
+$pass = getenv("MYSQLPASSWORD");
+$db   = getenv("MYSQLDATABASE");
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
