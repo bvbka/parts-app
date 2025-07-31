@@ -1,15 +1,35 @@
 <?php
 session_start(); // <--- dodaj na początku
 
-$host = "mysql.railway.internal";
-$user = "root";
-$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
-$db   = "railway";
+ini_set('display_errors', 0);         // wyłącza pokazywanie błędów na ekranie
+error_reporting(0);                   // wyłącza raportowanie błędów
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if (!$conn) {
-    die("Błąd połączenia z bazą danych: " . mysqli_connect_error());
+try {
+    $host = "mysql.railway.internal";
+    $user = "root";
+    $pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+    $db   = "railway";
+
+    $conn = mysqli_connect($host, $user, $pass, $db);
+
+} catch (mysqli_sql_exception $e) {
+    // Próba z lokalnymi danymi (np. XAMPP)
+    try {
+        $host = "localhost";
+        $user = "root";
+        $pass = "";
+        $db   = "tasks_app";
+
+        $conn = mysqli_connect($host, $user, $pass, $db);
+
+    } catch (mysqli_sql_exception $e) {
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+
+        die("Błąd połączenia z bazą danych (Railway i XAMPP): " . $e->getMessage());
+    }
 }
 
 $alias = $_POST['login'] ?? '';

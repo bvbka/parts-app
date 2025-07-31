@@ -4,16 +4,31 @@
 //$pass = '';
 //$db   = 'tasks_app';
 
-$host = "mysql.railway.internal";
-$user = "root";
-$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
-$db   = "railway";
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+try {
+    $host = "mysql.railway.internal";
+    $user = "root";
+    $pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+    $db   = "railway";
 
-if (!$conn) {
-    die("Błąd połączenia z bazą danych: " . mysqli_connect_error());
+    $conn = mysqli_connect($host, $user, $pass, $db);
+
+} catch (mysqli_sql_exception $e) {
+    // Próba z lokalnymi danymi (np. XAMPP)
+    try {
+        $host = "127.0.0.1";
+        $user = "root";
+        $pass = "";
+        $db   = "railway"; // lub "test"
+
+        $conn = mysqli_connect($host, $user, $pass, $db);
+
+    } catch (mysqli_sql_exception $e) {
+        die("Błąd połączenia z bazą danych (Railway i XAMPP): " . $e->getMessage());
+    }
 }
+
 $sql = "SELECT * FROM users";
 $result = mysqli_query($conn, $sql);
 

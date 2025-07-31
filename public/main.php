@@ -6,15 +6,35 @@ if (!isset($_SESSION['user'])) {
 }
 $alias = $_SESSION['user'];
 
-$host = "mysql.railway.internal";
-$user = "root";
-$pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
-$db   = "railway";
+ini_set('display_errors', 0);         // wyłącza pokazywanie błędów na ekranie
+error_reporting(0);                   // wyłącza raportowanie błędów
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if (!$conn) {
-    die("Błąd połączenia z bazą danych: " . mysqli_connect_error());
+try {
+    $host = "mysql.railway.internal";
+    $user = "root";
+    $pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
+    $db   = "railway";
+
+    $conn = mysqli_connect($host, $user, $pass, $db);
+
+} catch (mysqli_sql_exception $e) {
+    // Próba z lokalnymi danymi (np. XAMPP)
+    try {
+        $host = "localhost";
+        $user = "root";
+        $pass = "";
+        $db   = "tasks_app";
+
+        $conn = mysqli_connect($host, $user, $pass, $db);
+
+    } catch (mysqli_sql_exception $e) {
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+
+        die("Błąd połączenia z bazą danych (Railway i XAMPP): " . $e->getMessage());
+    }
 }
 
 $sql = "SELECT name, surname FROM users WHERE alias='$alias'";
@@ -42,6 +62,7 @@ mysqli_close($conn);
         --welcome-height: 100px;
     }
     body {
+        background-color: #151515;
         margin: 0;
         width: 100%;
         height: 100vh;
@@ -58,30 +79,36 @@ mysqli_close($conn);
     }
 
     .option {
-        background-color: rgb(125, 8, 214);
+        background-color: transparent;
         width: 80%;
-        height: 200px;
-        margin-top: 40px;
-        display: grid;
-        place-items: center;
-        font-size: 70px;
+        height: 70px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
         font-weight: bold;
         border-radius: 25px;
+        border: 2px solid white;
         transition: all 0.2s ease-in-out;
+        text-align: center;
+        color: white;
+        box-shadow: 0 0 16px 2px rgba(20, 103, 220, 0.8),0 0 16px 2px rgba(20, 103, 220, 0.8) inset;
     }
     .option:hover{
-        background-color: crimson;
+        background-color: rgba(20, 103, 220);
         color: white;
     }
     .welcome {
-      width: 100%;
-      height: var(--welcome-height);
-      background-color: lightblue;
-      font-size: 50px;
-      font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+        width: 100%;
+        height: var(--welcome-height);
+        background-color: #252525;
+        font-size: 35px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
     }
   </style>
 </head>
