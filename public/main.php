@@ -163,12 +163,28 @@ mysqli_close($conn);
     </div>
     <div class="welcome">Witaj, <?= $name ?>!</div>
     <div class="options">
-        <div class="option">Zleć zadanie</div>
+        <div class="option" dependentSite="actions/createTask.html">Zleć zadanie</div>
         <div class="option">Zlecone zadania</div>
         <div class="option">Twoje aktywne zadania</div>
         <div class="option">Twoje zakmnięte zadania</div>
         <div class="option">Opcje</div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const options = document.querySelectorAll('.option');
+
+        options.forEach(option => {
+            const target = option.getAttribute('dependentSite');
+            if (target) {
+            option.style.cursor = 'pointer'; // żeby wskazać, że to klikalne
+            option.addEventListener('click', () => {
+                window.location.href = target;
+            });
+            }
+        });
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
