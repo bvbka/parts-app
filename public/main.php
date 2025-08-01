@@ -109,10 +109,58 @@ mysqli_close($conn);
         justify-content: center;
         align-items: center;
         color: white;
+    }    
+    .notifs-blocker{
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.247);
+        backdrop-filter: blur(10px);
+        position: absolute;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .notifs-info{
+        width: 100%;
+        min-height: 25%;
+        height: fit-content;
+        padding: 20px;
+        background-color: rgb(35, 31, 63);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 25px;
+        text-align: center;
+        box-shadow: 0 0 16px 8px #00000077;
+        border-top: 2px solid rgba(61, 54, 109, 1);
+        border-bottom: 2px solid rgba(61, 54, 109, 1);
+    }
+
+    #enableNotifsBtn{
+        margin-top: 20px;
+        font-size: 20px;
+    }
+
+    .notifs-response{
+        display: none;
+        margin-top: 20px;
+        font-size: 15px;
+        color: red;
+        font-weight: bold;
     }
   </style>
 </head>
 <body>
+    <div class="notifs-blocker">
+        <div class="notifs-info">
+            Włącz powiadomienia, aby móc korzystać z aplikacji
+            <button id="enableNotifsBtn">Włącz powiadomienia</button>
+            <div class="notifs-response"></div>
+        </div>
+    </div>
     <div class="welcome">Witaj, <?= $name ?>!</div>
     <div class="options">
         <div class="option">Zleć zadanie</div>
@@ -121,5 +169,31 @@ mysqli_close($conn);
         <div class="option">Twoje zakmnięte zadania</div>
         <div class="option">Opcje</div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const notifsBlocker = document.querySelector('.notifs-blocker');
+        const notifsResponse = document.querySelector('.notifs-response');
+
+        if (Notification.permission === 'granted') {
+            notifsBlocker.style.display = 'none';
+        } else {
+            notifsBlocker.style.display = 'flex';
+        }
+
+        document.getElementById('enableNotifsBtn').addEventListener('click', () => {
+            Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                notifsBlocker.style.display = 'none';
+            } else {
+                notifsResponse.style.display = 'block';
+                notifsResponse.innerHTML = 'Nie włączyłeś powiadomień. Aplikacja nie będzie działać!';
+            }
+            });
+        });
+        });
+
+
+    </script>
 </body>
 </html>

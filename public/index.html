@@ -78,7 +78,6 @@
 
 <body>
   <div class="container">
-
     <div class="login-panel">
       <form id="loginForm">
         <div class="login-title">Zaloguj się</div>
@@ -132,10 +131,10 @@
       const result = await response.text();
       //messageDiv.innerHTML = result;
       if (result.trim() === "OK") {
-        alert("Zalogowano!");
+        // alert("Zalogowano!");
         window.location.href = "main.php"; // przekierowanie
       } else {
-        alert("Błędne dane.");
+        // alert("Błędne dane.");
       }
 
     });
