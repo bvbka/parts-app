@@ -20,6 +20,11 @@ if ($isProd) {
     $db   = "tasks_app";
 }
 
+$conn = mysqli_connect($host, $user, $pass, $db);
+if (!$conn) {
+    die("Błąd połączenia z bazą: " . mysqli_connect_error());
+}
+
 $alias = $_POST['login'] ?? '';
 $password = $_POST['password'] ?? '';
 
@@ -28,11 +33,12 @@ if (!$alias || !$password) {
     exit;
 }
 
-$alias = mysqli_real_escape_string($conn, $alias);
-$password = mysqli_real_escape_string($conn, $password);
-
 $sql = "SELECT * FROM users WHERE alias='$alias' AND password='$password'";
 $result = mysqli_query($conn, $sql);
+
+$sql2 = "SELECT * FROM users WHERE alias='$alias'";
+$result2 = mysqli_query($conn, $sql2);
+
 
 if (!$result) {
     echo "Błąd zapytania: " . mysqli_error($conn);
@@ -41,17 +47,10 @@ if (!$result) {
 
 if (mysqli_num_rows($result) === 1) {
     $_SESSION['user'] = $alias; // <-- zapisz użytkownika
-    echo "OK";
-} else {
-    echo "Błąd";
-}
-
-$sql2 = "SELECT * FROM users WHERE alias='$alias'";
-$result2 = mysqli_query($conn, $sql2);
-
-if (mysqli_num_rows($result2) === 1) {
+    
     $row = mysqli_fetch_assoc($result2);
     $_SESSION['user_id'] = $row['id']; // zapis ID użytkownika do sesji
+
     echo "OK";
 } else {
     echo "Błąd";
