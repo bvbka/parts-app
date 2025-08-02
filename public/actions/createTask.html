@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create task</title>
     <style>
         body {
@@ -11,12 +11,88 @@
             width: 100%;
             height: 100vh;
             background-color: #151515;
+            color: white;
+            font-family: system-ui;
+        }
+
+        .task-create-form {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .task-create-form span {
+            font-size: 30px;
+        }
+
+        .task-create-form select,
+        .task-create-form textarea {
+            width: 300px;
+            font-size: 20px;
+            margin: 5px 0 20px 0;
+        }
+
+        .task-create-form select {
+            height: 45px;
+        }
+
+        .task-create-form textarea {
+            height: 100px;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-size: 18px;
+            color: yellow;
         }
     </style>
 </head>
 
 <body>
+    <form id="taskForm" class="task-create-form">
+        <span>Zadanie dla:</span>
+        <select name="name_and_surname" id="userSelect" required>
+            <option>Ładowanie...</option>
+        </select>
+        <span>Opis zadania</span>
+        <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
+        <input type="submit" value="Wyślij" />
+    </form>
 
+    <script>
+        async function loadUsers() {
+            const select = document.getElementById('userSelect');
+            select.innerHTML = ''; // czyścimy "Ładowanie..."
+
+            try {
+                const response = await fetch('php/get-users.php');
+                if (!response.ok) throw new Error('Błąd sieci');
+
+                const data = await response.json();
+
+                if (data.length === 0) {
+                    select.innerHTML = '<option disabled>Brak użytkowników</option>';
+                    return;
+                }
+
+                data.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.alias;
+                    option.textContent = user.name + ' ' + user.surname;
+                    select.appendChild(option);
+                });
+
+            } catch (error) {
+                select.innerHTML = '<option disabled>Nie udało się załadować użytkowników</option>';
+                console.error(error);
+            }
+        }
+
+        loadUsers();
+    </script>
 </body>
 
 </html>

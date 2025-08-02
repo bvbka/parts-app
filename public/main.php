@@ -163,7 +163,7 @@ mysqli_close($conn);
     </div>
     <div class="welcome">Witaj, <?= $name ?>!</div>
     <div class="options">
-        <div class="option" dependentSite="actions/createTask.html">Zleć zadanie</div>
+        <div class="option" dependentSite="actions/createTask.php">Zleć zadanie</div>
         <div class="option">Zlecone zadania</div>
         <div class="option">Twoje aktywne zadania</div>
         <div class="option">Twoje zakmnięte zadania</div>
