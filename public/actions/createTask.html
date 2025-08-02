@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../js/popUp.js"></script>
     <title>Create task</title>
     <style>
         body {
@@ -52,7 +53,7 @@
 </head>
 
 <body>
-    <form id="taskForm" class="task-create-form">
+    <form id="taskForm" class="task-create-form" method="post">
         <span>Zadanie dla:</span>
         <select name="name_and_surname" id="userSelect" required>
             <option>Ładowanie...</option>
@@ -63,36 +64,62 @@
     </form>
 
     <script>
-        async function loadUsers() {
-            const select = document.getElementById('userSelect');
-            select.innerHTML = ''; // czyścimy "Ładowanie..."
+        document.addEventListener("DOMContentLoaded", async () => {
+            const select = document.getElementById("userSelect");
+            const form = document.getElementById("taskForm");
 
             try {
-                const response = await fetch('php/get-users.php');
-                if (!response.ok) throw new Error('Błąd sieci');
+                const response = await fetch("php/get-users.php");
+                if (!response.ok) throw new Error("Błąd sieci");
 
-                const data = await response.json();
+                const users = await response.json();
+                select.innerHTML = ""; // wyczyść obecne opcje
 
-                if (data.length === 0) {
-                    select.innerHTML = '<option disabled>Brak użytkowników</option>';
+                if (users.length === 0) {
+                    select.innerHTML = "<option>Brak użytkowników</option>";
                     return;
                 }
 
-                data.forEach(user => {
-                    const option = document.createElement('option');
-                    option.value = user.alias;
-                    option.textContent = user.name + ' ' + user.surname;
+                users.forEach(user => {
+                    const option = document.createElement("option");
+                    option.value = user.name + " " + user.surname;
+                    option.textContent = user.name + " " + user.surname;
                     select.appendChild(option);
                 });
-
             } catch (error) {
-                select.innerHTML = '<option disabled>Nie udało się załadować użytkowników</option>';
-                console.error(error);
+                select.innerHTML = "<option>Błąd ładowania danych</option>";
+                console.error("Błąd pobierania danych:", error);
             }
-        }
 
-        loadUsers();
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch("php/createTask.php", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const result = await response.text();
+                    console.log("Odpowiedź serwera:", result);
+
+                    if (result.trim() === "OK") {
+                        //showPopUp("pass", "Utworzono zadanie!", "Twoje zadanie zostało pomyślnie utworzone");
+                        alert("Utworzono zadanie!");
+                        form.reset();
+                    } else {
+                        //showPopUp("error", "Nie utworzono zadania!", "Błąd: " + result);
+                        alert("Błąd: " + result);
+                    }
+
+                } catch (error) {
+                    alert("Wystąpił błąd sieci: " + error.message);
+                }
+            });
+        });
     </script>
+
 </body>
 
 </html>

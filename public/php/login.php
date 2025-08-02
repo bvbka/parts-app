@@ -58,5 +58,16 @@ if (mysqli_num_rows($result) === 1) {
     echo "Błąd";
 }
 
+$sql2 = "SELECT * FROM users WHERE alias='$alias'";
+$result2 = mysqli_query($conn, $sql2);
+
+if (mysqli_num_rows($result2) === 1) {
+    $row = mysqli_fetch_assoc($result2);
+    $_SESSION['user_id'] = $row['id']; // zapis ID użytkownika do sesji
+    echo "OK";
+} else {
+    echo "Błąd";
+}
+
 mysqli_close($conn);
 ?>
