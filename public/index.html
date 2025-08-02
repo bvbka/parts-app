@@ -109,7 +109,7 @@
             const result = await response.text();
             if (result.trim() !== "NO_SESSION") {
                 // jeśli jest sesja – przekieruj automatycznie
-                window.location.href = "main.php";
+                window.location.href = "main.html";
             }
         });
     </script>
@@ -132,7 +132,7 @@
             //messageDiv.innerHTML = result;
             if (result.trim() === "OK") {
                 // alert("Zalogowano!");
-                window.location.href = "main.php"; // przekierowanie
+                window.location.href = "main.html"; // przekierowanie
             } else {
                 // alert("Błędne dane.");
             }

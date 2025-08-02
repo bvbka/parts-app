@@ -11,30 +11,18 @@ error_reporting(0);                   // wyłącza raportowanie błędów
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-try {
+$isProd = ($_SERVER['HTTP_HOST'] === 'parts-app-production-1abc.up.railway.app');
+
+if ($isProd) {
     $host = "mysql.railway.internal";
     $user = "root";
     $pass = "qSGDWJXvdyiyinJdgtkCshVvWOQjqPDz";
     $db   = "railway";
-
-    $conn = mysqli_connect($host, $user, $pass, $db);
-
-} catch (mysqli_sql_exception $e) {
-    // Próba z lokalnymi danymi (np. XAMPP)
-    try {
-        $host = "localhost";
-        $user = "root";
-        $pass = "";
-        $db   = "tasks_app";
-
-        $conn = mysqli_connect($host, $user, $pass, $db);
-
-    } catch (mysqli_sql_exception $e) {
-        ini_set('display_errors', 1);
-        error_reporting(E_ALL);
-
-        die("Błąd połączenia z bazą danych (Railway i XAMPP): " . $e->getMessage());
-    }
+} else {
+    $host = "localhost";
+    $user = "root";
+    $pass = "";
+    $db   = "tasks_app";
 }
 
 $sql = "SELECT name, surname FROM users WHERE alias <> ?";
