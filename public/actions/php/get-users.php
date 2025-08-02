@@ -25,6 +25,12 @@ if ($isProd) {
     $db   = "tasks_app";
 }
 
+$conn = mysqli_connect($host, $user, $pass, $db);
+if (!$conn) {
+    die("Błąd połączenia z bazą: " . mysqli_connect_error());
+}
+
+
 $sql = "SELECT name, surname FROM users WHERE alias <> ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $alias);

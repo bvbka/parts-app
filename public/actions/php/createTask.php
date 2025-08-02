@@ -26,6 +26,11 @@ if ($isProd) {
     $db   = "tasks_app";
 }
 
+$conn = mysqli_connect($host, $user, $pass, $db);
+if (!$conn) {
+    die("Błąd połączenia z bazą: " . mysqli_connect_error());
+}
+
 $name_and_surname = $_POST["name_and_surname"] ?? '';
 $task_content = $_POST["task_content"] ?? '';
 

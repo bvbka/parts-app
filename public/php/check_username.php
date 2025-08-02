@@ -27,7 +27,9 @@ try {
     }
 
     $conn = mysqli_connect($host, $user, $pass, $db);
-
+    if (!$conn) {
+        die("Błąd połączenia z bazą: " . mysqli_connect_error());
+    }
 
     $stmt = $conn->prepare("SELECT name, surname FROM users WHERE alias = ?");
     $stmt->bind_param('s', $alias);
