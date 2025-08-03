@@ -1,9 +1,17 @@
+// const statusMap = {
+//     "new": "🔵 Nowe",
+//     "accepted": "🟢 Przyjęto",
+//     "rejected": "🔴 Odrzucono",
+//     "verify": "🟡 Do weryfikacji",
+//     "done": "🟣 Wykonano"
+// };
+
 const statusMap = {
-    "new": "Nowe",
-    "accepted": "Przyjęto",
-    "rejected": "Odrzucono",
-    "verify": "Do weryfikacji",
-    "done": "Wykonano"
+    "new": "Nowe 🔵",
+    "accepted": "Przyjęto 🟢",
+    "rejected": "Odrzucono 🔴",
+    "verify": "Do weryfikacji 🟡",
+    "done": "Wykonano 🟣"
 };
 
 const colorMap = {
