@@ -50,12 +50,18 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    background-image: url("../img/login_bg.jpg");
+    background-size: cover;
 }
 
 #loginForm {
-    width: 90%;
+    width: 100%;
     height: 90vw;
-    background-color: white;
+    background-color: rgba(153, 153, 153, 0.192);
+    backdrop-filter: blur(10px);
+    /* border-top: 2px solid #ccc; */
+    /* border-bottom: 2px solid #ccc; */
+    box-shadow: 0 0 24px 16px rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,23 +71,39 @@ body {
 .login-title {
     font-size: 30px;
     margin-bottom: 10px;
+    font-weight: bolder;
+    color: white;
 }
 
 .login-input {
-    width: 80%;
-    height: 50px;
+    width: 280px;
+    height: 40px;
     margin: 10px 0;
-    border: 3px solid black;
+    /* border: 3px solid rgba(0, 0, 0, 0.199); */
+    border: none;
+    border-bottom: 3px solid white;
+    border-radius: 5px;
     outline: none;
-    font-size: 30px;
+    font-size: 24px;
     text-align: center;
+    background-color: rgba(19, 19, 19, 0.3);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.login-input:focus{
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.login-input::placeholder{
+    color: rgba(255, 255, 255, 0.521);
 }
 
 .login-button {
     width: 70%;
     height: 40px;
     font-size: 20px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 #loginMessage {
