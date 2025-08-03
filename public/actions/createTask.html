@@ -3,53 +3,10 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="../js/popUp.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script src="../js/check_session.js"></script>
+    <link rel="stylesheet" href="../css/style.css"/>
     <title>Create task</title>
-    <style>
-        body {
-            margin: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #151515;
-            color: white;
-            font-family: system-ui;
-        }
-
-        .task-create-form {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .task-create-form span {
-            font-size: 30px;
-        }
-
-        .task-create-form select,
-        .task-create-form textarea {
-            width: 300px;
-            font-size: 20px;
-            margin: 5px 0 20px 0;
-        }
-
-        .task-create-form select {
-            height: 45px;
-        }
-
-        .task-create-form textarea {
-            height: 100px;
-        }
-
-        #message {
-            margin-top: 10px;
-            font-size: 18px;
-            color: yellow;
-        }
-    </style>
 </head>
 
 <body>
@@ -60,7 +17,7 @@
         </select>
         <span>Opis zadania</span>
         <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
-        <input type="submit" value="Wyślij" />
+        <input type="submit" class="primary-btn" value="Wyślij" />
     </form>
 
     <script>

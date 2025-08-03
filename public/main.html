@@ -4,110 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="js/check_session.js"></script>
     <title>Main</title>
-    <style>
-        :root {
-            --welcome-height: 100px;
-        }
-
-        body {
-            background-color: #151515;
-            margin: 0;
-            width: 100%;
-            height: 100vh;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            color: white;
-        }
-
-        .options {
-            width: 100%;
-            height: calc(100% - var(--welcome-height));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .option {
-            background-color: transparent;
-            width: 80%;
-            height: 70px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 25px;
-            font-weight: bold;
-            border-radius: 25px;
-            border: 2px solid white;
-            transition: all 0.2s ease-in-out;
-            text-align: center;
-            color: white;
-            box-shadow: 0 0 16px 2px rgba(20, 103, 220, 0.8), 0 0 16px 2px rgba(20, 103, 220, 0.8) inset;
-            cursor: default;
-        }
-
-        .option:hover {
-            background-color: rgba(20, 103, 220);
-            color: white;
-            cursor: pointer;
-        }
-
-        .welcome {
-            width: 100%;
-            height: var(--welcome-height);
-            background-color: #252525;
-            font-size: 35px;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-
-        .notifs-blocker {
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.247);
-            backdrop-filter: blur(10px);
-            position: absolute;
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .notifs-info {
-            width: 100%;
-            min-height: 25%;
-            height: fit-content;
-            padding: 20px;
-            background-color: rgb(35, 31, 63);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 25px;
-            text-align: center;
-            box-shadow: 0 0 16px 8px #00000077;
-            border-top: 2px solid rgba(61, 54, 109, 1);
-            border-bottom: 2px solid rgba(61, 54, 109, 1);
-        }
-
-        #enableNotifsBtn {
-            margin-top: 20px;
-            font-size: 20px;
-        }
-
-        .notifs-response {
-            display: none;
-            margin-top: 20px;
-            font-size: 15px;
-            color: red;
-            font-weight: bold;
-        }
-    </style>
 </head>
 
 <body>
@@ -118,36 +17,17 @@
             <div class="notifs-response"></div>
         </div>
     </div>
-    <div class="welcome" id="welcomeMessage">Witaj, ...!</div>
     <div class="options">
         <div class="option" dependentSite="actions/createTask.html">Zleć zadanie</div>
-        <div class="option" dependentSite="actions/checkCreatedTasks.php">Zlecone zadania</div>
+        <div class="option" dependentSite="actions/checkCreatedTasks.html">Zlecone zadania</div>
         <div class="option">Twoje aktywne zadania</div>
-        <div class="option">Twoje zakmnięte zadania</div>
         <div class="option">Opcje</div>
+        <div class="option" dependentSite="test.html">DEV</div>
     </div>
 
     <script>
-        // Załaduj imię i nazwisko użytkownika z PHP    
-        // test
-        async function loadUserName() {
-            try {
-                const response = await fetch('php/check_username.php');
-                if (!response.ok) throw new Error('Błąd sieci');
-                const data = await response.json();
-                if (data.name) {
-                    document.getElementById('welcomeMessage').textContent = `Witaj, ${data.name} ${data.surname}!`;
-                } else {
-                    document.getElementById('welcomeMessage').textContent = 'Witaj, Nieznany!';
-                }
-            } catch (e) {
-                console.error('Błąd pobierania danych:', e);
-                document.getElementById('welcomeMessage').textContent = 'Witaj, Nieznany!';
-            }
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadUserName();
 
             const options = document.querySelectorAll('.option');
 

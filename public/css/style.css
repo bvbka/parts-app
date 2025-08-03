@@ -1,0 +1,228 @@
+/* GLOBAL */
+body {
+    background-color: #151515;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: system-ui;
+}
+
+:root{
+    --primary-color: #1c6beb;
+}
+
+.primary-btn, .secondary-btn{
+    height: 45px;
+    min-width: 140px;
+    font-size: 18px;
+    font-family: system-ui;
+    outline: none;
+    border-radius: 8px;
+    padding: 0 15px;
+    border: none;
+    font-weight: bold;
+    margin: 5px;
+}
+.primary-btn{
+    background-color: var(--primary-color);
+    color: white;
+}
+.secondary-btn{
+    background-color: #d8d8d8;
+}
+
+/* INDEX.HTML */
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.switch-ui-button {
+    width: 450px;
+    height: 75px;
+    font-size: 40px;
+}
+
+.login-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#loginForm {
+    width: 90%;
+    height: 90vw;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-title {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.login-input {
+    width: 80%;
+    height: 50px;
+    margin: 10px 0;
+    border: 3px solid black;
+    outline: none;
+    font-size: 30px;
+    text-align: center;
+}
+
+.login-button {
+    width: 70%;
+    height: 40px;
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+#loginMessage {
+    color: white;
+    font-size: 50px;
+}
+
+
+/* MAIN.HTML */
+.options {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.option {
+    background-color: transparent;
+    width: 80%;
+    height: 70px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+    border-radius: 25px;
+    border: 2px solid white;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 16px 2px rgba(20, 103, 220, 0.8), 0 0 16px 2px rgba(20, 103, 220, 0.8) inset;
+    cursor: default;
+}
+
+.option:hover {
+    background-color: rgba(20, 103, 220);
+    color: white;
+    cursor: pointer;
+}
+
+.notifs-blocker {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.247);
+    backdrop-filter: blur(10px);
+    position: absolute;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notifs-info {
+    width: 100%;
+    min-height: 25%;
+    height: fit-content;
+    padding: 20px;
+    background-color: rgb(35, 31, 63);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 25px;
+    text-align: center;
+    box-shadow: 0 0 16px 8px #00000077;
+    border-top: 2px solid rgba(61, 54, 109, 1);
+    border-bottom: 2px solid rgba(61, 54, 109, 1);
+}
+
+#enableNotifsBtn {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.notifs-response {
+    display: none;
+    margin-top: 20px;
+    font-size: 15px;
+    color: red;
+    font-weight: bold;
+}
+
+/* CHECKCREATEDTASKS.HTML */
+.task {
+    width: calc(100% - 12px);
+    min-height: 50px;
+    background-color: white;
+    color: black;
+    margin-bottom: 10px;
+    padding: 6px;
+    border-top: 5px solid var(--primary-color);
+}
+
+.task-title {
+    font-weight: bold;
+}
+
+.task-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* CREATETASK.HTML */
+.task-create-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.task-create-form span {
+    font-size: 30px;
+    color: white;
+}
+
+.task-create-form select,
+.task-create-form textarea {
+    width: 300px;
+    font-size: 20px;
+    margin: 5px 0 20px 0;
+}
+
+.task-create-form select {
+    height: 45px;
+}
+
+.task-create-form textarea {
+    height: 100px;
+}
+
+#message {
+    margin-top: 10px;
+    font-size: 18px;
+    color: yellow;
+}
+
+
+/* TEST.HTML */
