@@ -1,9 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: index.html");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-store" />
     <script src="../js/popUp.js"></script>
     <title>Create task</title>
     <style>
@@ -37,11 +46,6 @@
 <body>
     <table>
         <?php
-            session_start();
-            if (!isset($_SESSION['user'])) {
-                header("Location: index.html");
-                exit;
-            }
             $alias = $_SESSION['user'];
 
             mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
