@@ -50,7 +50,8 @@ $assignee = $row['alias'];
 
 //	task_id	reporter_alias	assignee_alias	summary	
 
-$sql = "INSERT INTO tasks (task_id, reporter_alias, assignee_alias, summary, status) VALUES ($next_id, '$alias', '$assignee', '$task_content', 'new')";
+$sql = "INSERT INTO tasks (task_id, reporter_alias, assignee_alias, summary, status, creation_date, creation_time) VALUES ($next_id, '$alias', '$assignee', '$task_content', 'new', CURDATE(), DATE_FORMAT(NOW(), '%H:%i:%s'))";
+
 
 if (mysqli_query($conn, $sql)) {
     echo "OK";
