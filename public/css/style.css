@@ -218,6 +218,13 @@ body {
     height: 100px;
 }
 
+.task-create-form .task-deadlines{
+    width: 300px;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 5px 0 20px 0;
+}
+
 #message {
     margin-top: 10px;
     font-size: 18px;

@@ -5,18 +5,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <script src="../js/check_session.js"></script>
-    <link rel="stylesheet" href="../css/style.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="../css/style.css" />
     <title>Create task</title>
 </head>
 
 <body>
     <form id="taskForm" class="task-create-form" method="post">
-        <span>Zadanie dla:</span>
+        <span>Zadanie dla</span>
         <select name="name_and_surname" id="userSelect" required>
             <option>Ładowanie...</option>
         </select>
+
         <span>Opis zadania</span>
         <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
+
+        <span>Deadline</span>
+        <div class="task-deadlines">
+            <input type="date" name="deadline_date" />
+            <input type="time" name="deadline_time" />
+        </div>
+
         <input type="submit" class="primary-btn" value="Wyślij" />
     </form>
 

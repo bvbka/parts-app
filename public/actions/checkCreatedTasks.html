@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store" />
     <link rel="stylesheet" href="../css/style.css" />
     <title>Lista zadań</title>
 </head>
@@ -40,23 +41,33 @@
                     div.className = 'task';
                     div.style.borderTop = `5px solid ${colorMap[task.status] || '#ccc'}`;
 
+                    // Tytuł zadania
                     const titleDiv = document.createElement('div');
                     titleDiv.className = 'task-title';
-                    titleDiv.textContent = task.summary;
+                    titleDiv.textContent = "(#" + task.task_id + ") " + task.summary;
 
+                    // Czas utworzenia i deadline
+                    const timesDiv = document.createElement('div');
+                    timesDiv.className = 'task-times';
+                    timesDiv.textContent = "Utworzono: " + task.creation_date + " " + task.creation_time;
+
+
+                    // Szczegóły zadania
                     const detailsDiv = document.createElement('div');
                     detailsDiv.className = 'task-details';
-
+                    // Przypisany
                     const assigneeSpan = document.createElement('span');
                     assigneeSpan.textContent = task.name + ' ' + task.surname;
-
+                    // Status
                     const statusSpan = document.createElement('span');
                     statusSpan.textContent = statusMap[task.status] || task.status;
 
+                    // Podpinanie elementów HTML
                     detailsDiv.appendChild(assigneeSpan);
                     detailsDiv.appendChild(statusSpan);
 
                     div.appendChild(titleDiv);
+                    div.appendChild(timesDiv);
                     div.appendChild(detailsDiv);
 
                     container.appendChild(div);

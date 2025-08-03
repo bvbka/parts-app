@@ -34,15 +34,21 @@ if (!$conn) {
     exit;
 }
 
-$sql = "SELECT summary, status, name, surname FROM tasks JOIN users ON assignee_alias = alias WHERE reporter_alias = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('s', $alias);
-$stmt->execute();
-$result = $stmt->get_result();
+$sql = "SELECT task_id, summary, status, name, surname, creation_date, creation_time
+        FROM tasks
+        JOIN users ON assignee_alias = alias
+        WHERE reporter_alias = '$alias'
+        ORDER BY creation_date DESC, creation_time DESC";
+
+
+$result = mysqli_query($conn, $sql);
 
 $tasks = [];
-while ($row = $result->fetch_assoc()) {
+while ($row = mysqli_fetch_assoc($result)) {
     $tasks[] = $row;
 }
 
 echo json_encode($tasks);
+
+$conn->close();
+
