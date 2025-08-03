@@ -24,7 +24,7 @@
 
         async function fetchTasks() {
             try {
-                const response = await fetch('php/tasks_data.php');
+                const response = await fetch('php/yourTasks.php');
                 if (!response.ok) {
                     if (response.status === 401) {
                         // Jeśli nie jest zalogowany, przekieruj
@@ -36,6 +36,28 @@
                 const tasks = await response.json();
                 const container = document.getElementById('tasksContainer');
                 container.innerHTML = '';
+
+                function formatDateToPolish(dateString) {
+                    const [year, month, day] = dateString.split('-');
+                    const monthNames = [
+                        '', // żeby indeks 1 był dla stycznia
+                        'stycznia', 'lutego', 'marca', 'kwietnia',
+                        'maja', 'czerwca', 'lipca', 'sierpnia',
+                        'września', 'października', 'listopada', 'grudnia'
+                    ];
+
+                    const dayNum = parseInt(day, 10); // usunięcie zera wiodącego
+                    const monthNum = parseInt(month, 10);
+
+                    return `${dayNum} ${monthNames[monthNum]}`;
+                }
+
+                function cutSeconds(timeString) {
+                    return timeString.split(':').slice(0, 2).join(':');
+                }
+
+
+
 
                 tasks.forEach(task => {
                     const div = document.createElement('div');
@@ -50,7 +72,21 @@
                     // Czas utworzenia i deadline
                     const timesDiv = document.createElement('div');
                     timesDiv.className = 'task-times';
-                    timesDiv.textContent = "Utworzono: " + task.creation_date + " " + task.creation_time;
+                    // timesDiv.textContent = "Utworzono: " + task.creation_date + " " + task.creation_time;
+                    const creation = document.createElement('span');
+                    const deadline = document.createElement('span');
+                    // creation.innerHTML = "<b>Utworzono:</b><br>" + task.creation_date + " " + task.creation_time;
+                    // deadline.innerHTML = "<b>Termin:</b><br>" + task.deadline_date + " " + task.deadline_time;
+                    creation.innerHTML = "<b>Zlecono:</b> <span>" + formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time) + "</span>";
+                    timesDiv.appendChild(creation);
+
+                    if (task.deadline_date != undefined && task.deadline_time != undefined) {
+                        deadline.innerHTML = "<b>Termin:</b><span>" + formatDateToPolish(task.deadline_date) + ", " + cutSeconds(task.deadline_time) + "</span>";
+                        timesDiv.appendChild(deadline);
+                    } else {
+                        deadline.innerHTML = "<b>Termin:</b><span>Brak terminu</span>";
+                        timesDiv.appendChild(deadline);
+                    }
 
 
                     // Szczegóły zadania
@@ -68,7 +104,9 @@
                     detailsDiv.appendChild(statusSpan);
 
                     div.appendChild(titleDiv);
+                    div.appendChild(document.createElement("hr"));
                     div.appendChild(timesDiv);
+                    div.appendChild(document.createElement("hr"));
                     div.appendChild(detailsDiv);
 
                     container.appendChild(div);

@@ -181,12 +181,24 @@ body {
 
 .task-title {
     font-weight: bold;
+    text-align: center;
 }
 
 .task-details {
     display: flex;
     justify-content: space-between;
 }
+.task-times > span{
+    display: flex;
+    justify-content: space-between;
+}
+/* .task-times{
+    display: flex;
+    justify-content: space-between;
+}
+.task-times span:nth-of-type(2){
+    text-align: right;
+} */
 
 /* CREATETASK.HTML */
 .task-create-form {
