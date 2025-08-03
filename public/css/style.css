@@ -194,7 +194,7 @@ body {
 }
 .task-buttons{
     width: 100%;
-    display: flex;
+    display: none;
     justify-content: space-evenly;
     margin-top: 5px;
 }

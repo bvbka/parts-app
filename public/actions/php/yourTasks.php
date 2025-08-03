@@ -38,7 +38,11 @@ $sql = "SELECT task_id, summary, status, name, surname, creation_date, creation_
         FROM tasks
         JOIN users ON assignee_alias = alias
         WHERE assignee_alias = '$alias'
-        ORDER BY creation_date DESC, creation_time DESC";
+        ORDER BY 
+            FIELD(status, 'new', 'accepted', 'verify', 'rejected', 'done'),
+            creation_date DESC,
+            creation_time DESC";
+
 
 
 $result = mysqli_query($conn, $sql);

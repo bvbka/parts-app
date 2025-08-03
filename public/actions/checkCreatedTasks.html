@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Cache-Control" content="no-store" />
     <script src="../js/check_session.js"></script>
+    <script src="../js/statusMaps.js"></script>
     <link rel="stylesheet" href="../css/style.css" />
     <title>Lista zadań</title>
 </head>
@@ -14,21 +15,6 @@
     <div id="tasksContainer"></div>
 
     <script>
-        const statusMap = {
-            "new": "Nowe",
-            "accepted": "Przyjęto",
-            "rejected": "Odrzucono",
-            "verify": "Do weryfikacji",
-            "wykonano": "Wykonano"
-        };
-
-        const colorMap = {
-            "new": "#1c6beb",
-            "accepted": "#20e62d",
-            "rejected": "#e62020",
-            "verify": "#e6df20",
-            "wykonano": "#8920e6"
-        };
 
         async function fetchTasks() {
             try {
@@ -64,10 +50,32 @@
                     return timeString.split(':').slice(0, 2).join(':');
                 }
 
+                async function changeTaskStatus(taskId, newStatus) {
+                    try {
+                        const response = await fetch('php/changeTaskStatus.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({ task_id: taskId, new_status: newStatus })
+                        });
+
+                        const text = await response.text();
+
+                        if (text.trim() === 'OK') {
+                            return true;  // sukces
+                        } else {
+                            console.error('Błąd z serwera:', text);
+                            return false; // błąd
+                        }
+                    } catch (err) {
+                        console.error('Błąd sieci lub inny:', err);
+                        return false;
+                    }
+                }
+
                 tasks.forEach(task => {
                     const div = document.createElement('div');
                     div.className = 'task';
-                    div.style.borderTop = `5px solid ${colorMap[task.status] || '#ccc'}`;
+                    div.style.borderTop = `7px solid ${colorMap[task.status] || '#ccc'}`;
 
                     // Tytuł zadania
                     const titleDiv = document.createElement('div');
@@ -106,8 +114,49 @@
 
 
                     // Przyciski akcji
-                    
+                    if (task.status == "verify") {
+                        var buttonsDiv = document.createElement("div");
+                        buttonsDiv.classList.add("task-buttons");
 
+                        if (task.status == "verify") {
+                            var primBtn = document.createElement("input");
+                            primBtn.type = "button";
+                            primBtn.value = "Akceptuj";
+                            primBtn.style.backgroundColor = colorMap[task.status];
+                            primBtn.setAttribute("to-status", "done");
+                            primBtn.classList.add("primary-btn");
+                            var secBtn = document.createElement("input");
+                            secBtn.type = "button";
+                            secBtn.value = "Odrzuć";
+                            secBtn.setAttribute("to-status", "accepted");
+                            secBtn.classList.add("secondary-btn");
+
+                            primBtn.onclick = async () => {
+                                const newStatus = primBtn.getAttribute("to-status");
+                                const success = await changeTaskStatus(task.task_id, newStatus);
+                                if (success) {
+                                    // alert("Status zmieniony!");
+                                    fetchTasks();
+                                } else {
+                                    alert("Nie udało się zmienić statusu.");
+                                }
+                            };
+                            secBtn.onclick = async () => {
+                                const newStatus = secBtn.getAttribute("to-status");
+                                const success = await changeTaskStatus(task.task_id, newStatus);
+                                if (success) {
+                                    // alert("Status zmieniony!");
+                                    fetchTasks();
+                                } else {
+                                    alert("Nie udało się zmienić statusu.");
+                                }
+                            };
+
+                            buttonsDiv.append(primBtn, secBtn);
+
+
+                        }
+                    }
 
                     // Podpinanie elementów HTML
                     detailsDiv.appendChild(assigneeSpan);
@@ -118,8 +167,20 @@
                     div.appendChild(timesDiv);
                     div.appendChild(document.createElement("hr"));
                     div.appendChild(detailsDiv);
+                    if (task.status == "verify") {
+                        div.appendChild(buttonsDiv);
+                    }
 
                     container.appendChild(div);
+                });
+
+                document.querySelectorAll('.task').forEach(task => {
+                    task.addEventListener('click', function () {
+                        let buttonDiv = task.lastChild;
+                        if (buttonDiv.classList.contains("task-buttons")) {
+                            buttonDiv.style.display = (buttonDiv.style.display === "flex") ? "none" : "flex";
+                        }
+                    });
                 });
 
 

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Cache-Control" content="no-store" />
     <script src="../js/check_session.js"></script>
+    <script src="../js/statusMaps.js"></script>
     <link rel="stylesheet" href="../css/style.css" />
     <title>Lista zadań</title>
 </head>
@@ -14,26 +15,6 @@
     <div id="tasksContainer"></div>
 
     <script>
-        const statusMap = {
-            "new": "Nowe",
-            "accepted": "Przyjęto",
-            "rejected": "Odrzucono",
-            "verify": "Do weryfikacji",
-            "wykonano": "Wykonano"
-        };
-
-        const colorMap = {
-            "new": "#1c6beb",
-            "accepted": "#20e62d",
-            "rejected": "#e62020",
-            "verify": "#e6df20",
-            "wykonano": "#8920e6"
-        };
-
-        const buttonsMap = {
-            "new": ["Przyjmij", "Odrzuć"],
-            "accepted": ["Prześlij do weryfikacji"]
-        };
 
         async function fetchTasks() {
             try {
@@ -94,7 +75,7 @@
                 tasks.forEach(task => {
                     const div = document.createElement('div');
                     div.className = 'task';
-                    div.style.borderTop = `5px solid ${colorMap[task.status] || '#ccc'}`;
+                    div.style.borderTop = `7px solid ${colorMap[task.status] || '#ccc'}`;
 
                     // Tytuł zadania
                     const titleDiv = document.createElement('div');
@@ -141,6 +122,7 @@
                             var primBtn = document.createElement("input");
                             primBtn.type = "button";
                             primBtn.value = "Przyjmij";
+                            primBtn.style.backgroundColor = colorMap[task.status];
                             primBtn.setAttribute("to-status", "accepted");
                             primBtn.classList.add("primary-btn");
                             var secBtn = document.createElement("input");
@@ -177,6 +159,7 @@
                             var primBtn = document.createElement("input");
                             primBtn.type = "button";
                             primBtn.value = "Prześlij do weryfikacji";
+                            primBtn.style.backgroundColor = colorMap[task.status];
                             primBtn.setAttribute("to-status", "verify");
                             primBtn.classList.add("primary-btn");
 
@@ -207,11 +190,20 @@
                     div.appendChild(timesDiv);
                     div.appendChild(document.createElement("hr"));
                     div.appendChild(detailsDiv);
-                    if(task.status == "new" || task.status == "accepted"){
+                    if (task.status == "new" || task.status == "accepted") {
                         div.appendChild(buttonsDiv);
                     }
 
                     container.appendChild(div);
+                });
+
+                document.querySelectorAll('.task').forEach(task => {
+                    task.addEventListener('click', function () {
+                        let buttonDiv = task.lastChild;
+                        if (buttonDiv.classList.contains("task-buttons")) {
+                            buttonDiv.style.display = (buttonDiv.style.display === "flex") ? "none" : "flex";
+                        }
+                    });
                 });
 
 
