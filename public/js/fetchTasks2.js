@@ -1,18 +1,20 @@
-async function fetchTasks() {
+async function fetchTasks2(siteType, containerType) {
 
-    var titleBar = document.querySelector(".tasks-title-bar");
-
+    var titleBar = document.querySelector(".tasks-title-bar-" + containerType);
+    console.log(siteType);
     if (siteType == "checkYourTasks") {
         titleBar.innerHTML = "Do zrobienia";
+        console.log("a");
     } else if (siteType == "checkCreatedTasks") {
         titleBar.innerHTML = "Zlecone zadania";
+        console.log("b");
     }
 
     try {
         if (siteType == "checkYourTasks") {
-            var response = await fetch('php/yourTasks.php');
+            var response = await fetch('actions/php/yourTasks.php');
         } else if (siteType == "checkCreatedTasks") {
-            var response = await fetch('php/tasks_data.php');
+            var response = await fetch('actions/php/tasks_data.php');
         }
         if (!response.ok) {
             if (response.status === 401) {
@@ -23,7 +25,7 @@ async function fetchTasks() {
             throw new Error('Błąd sieci');
         }
         const tasks = await response.json();
-        const container = document.getElementById('tasksContainer');
+        const container = document.querySelector('.tasksContainer-' + containerType);
         container.innerHTML = '';
 
         function formatDateToPolish(dateString) {
@@ -47,7 +49,7 @@ async function fetchTasks() {
 
         async function changeTaskStatus(taskId, newStatus) {
             try {
-                const response = await fetch('php/changeTaskStatus.php', {
+                const response = await fetch('actions/php/changeTaskStatus.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ task_id: taskId, new_status: newStatus })
