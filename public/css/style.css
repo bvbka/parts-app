@@ -7,6 +7,7 @@ body {
     font-family: system-ui;
     background-image: url(../img/login_bg.jpg);
     background-size: cover;
+    background-attachment: fixed;
 }
 
 :root {
@@ -225,15 +226,18 @@ body {
 }
 
 .task {
-    width: calc(100% - 24px);
+    width: calc(100% - 24px - 7px);
     min-height: 50px;
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    /* color: black; */
+    /* background-color: #272757; */
+    background: linear-gradient(to right, hsl(240, 38%, 25%), hsl(240, 38%, 35%));
+    color: rgb(229, 244, 255);
     padding: 6px;
     margin: 0 6px;
     margin-bottom: 15px;
     border-radius: 10px;
-    border-top: 5px solid var(--primary-color);
+    box-shadow: 0 0 16px 8px rgba(0, 0, 0, 0.6);
 }
 
 .task-title {

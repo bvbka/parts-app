@@ -23,7 +23,7 @@ async function fetchTasks() {
             throw new Error('Błąd sieci');
         }
         const tasks = await response.json();
-        const container = document.getElementById('tasksContainer');
+        const container = document.querySelector('.tasksContainer');
         container.innerHTML = '';
 
         function formatDateToPolish(dateString) {
@@ -70,7 +70,7 @@ async function fetchTasks() {
         tasks.forEach(task => {
             const div = document.createElement('div');
             div.className = 'task';
-            div.style.borderTop = `7px solid ${colorMap[task.status] || '#ccc'}`;
+            div.style.borderLeft = `7px solid ${colorMap[task.status] || '#ccc'}`;
 
             // Tytuł zadania
             const titleDiv = document.createElement('div');
