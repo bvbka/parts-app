@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title>App list</title>
+</head>
+
+<body>
+    <div class="apps-container">
+        <div class="app-box" app="apps/task_app.html">
+            <div class="app-icon">
+                <img src="img/task_app_icon.png" />
+            </div>
+            <div class="app-title">Zadania</div>
+        </div>
+        <div class="app-box" app="apps/fuel_app.html">
+            <div class="app-icon">'
+                <img src="img/fuel_app_icon.png" />
+            </div>
+            <div class="app-title">Paliwo</div>
+        </div>
+        <div class="app-box">
+            <div class="app-icon"></div>
+            <div class="app-title">...</div>
+        </div>
+    </div>
+
+    <script>
+        var appBoxes = document.querySelectorAll(".app-box");
+
+        appBoxes.forEach(box => {
+            if(box.hasAttribute("app")){
+                box.addEventListener("click",function(){
+                    setTimeout(function(){
+                        location.href = box.getAttribute("app");
+                    },200);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

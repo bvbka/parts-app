@@ -7,13 +7,13 @@ body {
     font-family: system-ui;
 }
 
-details summary{
+details summary {
     color: white;
     font-weight: bold;
     text-align: center;
     margin: 0 14px 20px;
     border-radius: 10px;
-    background: linear-gradient(to right, #272858, hsl(246, 40%, 35%));
+    background: var(--task-background-color);
     transition: all 0.2s ease-in-out;
     padding: 5px 0;
 }
@@ -26,6 +26,7 @@ details[open] summary {
     --primary-color: #1c6beb;
     --panel-accent-color: linear-gradient(to right, #d91daf, #f16e60);
     --panel-text-shadow: 0px 0px 12px rgba(74, 233, 90, 1);
+    --task-background-color: linear-gradient(to right, #272858, hsl(246, 40%, 35%));
 }
 
 .primary-btn,
@@ -290,7 +291,7 @@ details[open] summary {
 .task {
     width: calc(100% - 32px - 28px);
     min-height: 50px;
-    background: linear-gradient(to right, #272858, hsl(246, 40%, 35%));
+    background: var(--task-background-color);
     color: rgb(229, 244, 255);
     padding: 16px;
     margin: 0 14px;
@@ -470,4 +471,155 @@ details[open] summary {
     /* dla innych przeglądarek */
     background-clip: text;
     color: transparent;
+}
+
+/* APPLIST */
+
+.apps-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start
+}
+
+.apps-container *{
+    transition: all 0.2s ease-in-out;
+}
+
+.app-box {
+    width: calc(50% - 20px - 20px);
+    height: 200px;
+    background: var(--task-background-color);
+    outline: 4px solid rgba(204, 204, 204, 0.3);
+    margin: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-box:hover {
+    outline: 4px solid rgb(204, 204, 204);
+    box-shadow: 0 0 16px 8px rgba(255, 255, 255, 0.3);
+}
+
+.app-box:hover img {
+    opacity: 100%;
+}
+
+.app-box:hover .app-title {
+    color: white;
+}
+
+.app-icon {
+    height: 75%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-icon img {
+    height: 75%;
+    width: auto;
+    opacity: 30%;
+}
+
+.app-title {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+}
+
+
+/* STATS */
+.stats-container{
+    padding-top: 80px;
+    padding-bottom: 65px;
+    width: 100%;
+    height: 100%;
+}
+
+.task-widget {
+    width: calc(100% - 28px - 40px);
+    margin: 14px;
+    background: var(--task-background-color);
+    padding: 20px; /* np. wewnętrzny margines */
+    border-radius: 10px;
+}
+
+.task-widget-text{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+}
+
+.task-pie-chart{
+    height: 300px;
+}
+
+/* .task-pie-chart-title{
+    width: 100%;
+    height: 13%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+} */
+
+.task-pie-chart-canvas{
+    width: 100%;
+    /* height: calc(87% - 10px - 30px); */
+    height: calc(100% - 10px - 30px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.task-pie-chart canvas {
+    width: 100%;
+    height: fit-content;
+    filter: drop-shadow(0px 0px 10px #0000006e);
+}
+
+.double-data{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 70px;
+}
+.task-widget-double-first, .task-widget-double-second{
+    width: calc(50% - 5px);
+    color: white;
+}
+.task-widget-double-first span:nth-of-type(1), .task-widget-double-second span:nth-of-type(1){
+    font-size: 40px;
+    font-weight: bold;
+    line-height: 42px;
+    margin: 0 10px;
+}
+.task-widget-double-first span:nth-of-type(2), .task-widget-double-second span:nth-of-type(2){
+    font-size: 14px;
+    margin: 0 10px;
+}
+.task-widget-double-first{
+    background: linear-gradient(to right, rgba(0,0,0, 0), #57ee73cd);
+    text-align: right;
+}
+.task-widget-double-second{
+    background: linear-gradient(to right, #e63636cd, rgba(0,0,0, 0));
 }

@@ -1,21 +1,11 @@
 async function fetchTasks2(siteType, containerType) {
 
-    const titleBars = document.querySelectorAll('.tasks-title-bar');
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 0) {
-            titleBars.forEach(bar => bar.classList.add('scrolled'));
-        } else {
-            titleBars.forEach(bar => bar.classList.remove('scrolled'));
-        }
-    });
-
-
     try {
+        var response;
         if (siteType == "checkYourTasks") {
-            var response = await fetch('actions/php/yourTasks.php');
+            response = await fetch('php/yourTasks.php');
         } else if (siteType == "checkCreatedTasks") {
-            var response = await fetch('actions/php/tasks_data.php');
+            response = await fetch('php/tasks_data.php');
         }
         if (!response.ok) {
             if (response.status === 401) {
@@ -50,7 +40,7 @@ async function fetchTasks2(siteType, containerType) {
 
         async function changeTaskStatus(taskId, newStatus) {
             try {
-                const response = await fetch('actions/php/changeTaskStatus.php', {
+                const response = await fetch('php/changeTaskStatus.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ task_id: taskId, new_status: newStatus })
@@ -167,7 +157,7 @@ async function fetchTasks2(siteType, containerType) {
                         const success = await changeTaskStatus(task.task_id, newStatus);
                         if (success) {
                             // alert("Status zmieniony!");
-                            fetchTasks();
+                            fetchTasks2(siteType, containerType);
                         } else {
                             alert("Nie udało się zmienić statusu.");
                         }
@@ -177,7 +167,7 @@ async function fetchTasks2(siteType, containerType) {
                         const success = await changeTaskStatus(task.task_id, newStatus);
                         if (success) {
                             // alert("Status zmieniony!");
-                            fetchTasks();
+                            fetchTasks2(siteType, containerType);
                         } else {
                             alert("Nie udało się zmienić statusu.");
                         }
@@ -199,7 +189,7 @@ async function fetchTasks2(siteType, containerType) {
                         const success = await changeTaskStatus(task.task_id, newStatus);
                         if (success) {
                             // alert("Status zmieniony!");
-                            fetchTasks();
+                            fetchTasks2(siteType, containerType);
                         } else {
                             alert("Nie udało się zmienić statusu.");
                         }
@@ -226,7 +216,7 @@ async function fetchTasks2(siteType, containerType) {
                         const success = await changeTaskStatus(task.task_id, newStatus);
                         if (success) {
                             // alert("Status zmieniony!");
-                            fetchTasks();
+                            fetchTasks2(siteType, containerType);
                         } else {
                             alert("Nie udało się zmienić statusu.");
                         }
@@ -236,7 +226,7 @@ async function fetchTasks2(siteType, containerType) {
                         const success = await changeTaskStatus(task.task_id, newStatus);
                         if (success) {
                             // alert("Status zmieniony!");
-                            fetchTasks();
+                            fetchTasks2(siteType, containerType);
                         } else {
                             alert("Nie udało się zmienić statusu.");
                         }
