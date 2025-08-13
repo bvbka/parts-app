@@ -1,68 +1,323 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="css/style.css" />
     <script src="js/check_session.js"></script>
-    <title>Main</title>
+    <script src="js/fetchTasks2.js"></script>
+    <script src="js/statusMaps.js"></script>
+    <script src="js/popUp.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <title>DEV TEST</title>
 </head>
 
 <body>
-    <div class="notifs-blocker">
-        <div class="notifs-info">
-            Włącz powiadomienia, aby móc korzystać z aplikacji
-            <button id="enableNotifsBtn">Włącz powiadomienia</button>
-            <div class="notifs-response"></div>
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="myGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#d91daf" />
+                <stop offset="100%" stop-color="#f16e60" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div class="main-options-panel">
+
+        <div class="endpoint-option">
+            <div class="tasks-title-bar-delegated tasks-title-bar">
+                <div class="tasks-title-bar-description">
+                    <span>Zlecone</span>
+                    <span>Zadania dla kogoś</span>
+                </div>
+                <div class="tasks-title-bar-button">
+                    <button class="createTaskButton"><img src="img/plus.png" /></button>
+                </div>
+            </div>
+            <div class="tasksContainer-delegated tasksContainer"></div>
+
+            <script>
+                fetchTasks2("checkCreatedTasks", "delegated");
+            </script>
         </div>
-    </div>
-    <div class="options-container">
-        <div class="options">
-            <div class="option" dependentSite="actions/createTask.html">Zleć zadanie</div>
-            <div class="option" dependentSite="actions/checkCreatedTasks.html">Zlecone zadania</div>
-            <div class="option" dependentSite="actions/checkYourTasks.html">Zadania do wykonania</div>
-            <div class="option">Opcje</div>
-            <div class="option" dependentSite="test.html">DEV</div>
+
+        <div class="endpoint-option">
+            <div class="tasks-title-bar-mine tasks-title-bar">
+                <div class="tasks-title-bar-description">
+                    <span>Do zrobienia</span>
+                    <span>Zadanie od kogoś</span>
+                </div>
+                <div class="tasks-title-bar-button">
+                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                </div>
+            </div>
+            <div class="tasksContainer-mine tasksContainer"></div>
+
+            <script>
+                fetchTasks2("checkYourTasks", "mine");
+            </script>
+        </div>
+
+        <div class="endpoint-option">
+            STATS
+        </div>
+
+        <div class="endpoint-option">
+            W BUDOWIE
+        </div>
+
+        <div class="endpoint-option">
+            DEV
+        </div>
+
+        <div class="navigation-bar">
+            <div class="selected-option-panel">
+                <div class="selected-option"></div>
+            </div>
+            <div class="options-panel">
+                <div class="panel-option">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                            stroke="none">
+                            <path d="M4375 5109 c-76 -11 -114 -24 -200 -66 -66 -33 -132 -97 -1043 -1006
+                                -600 -600 -981 -987 -994 -1012 -17 -32 -30 -114 -64 -390 -24 -192 -44 -370
+                                -44 -395 1 -110 96 -214 195 -213 35 0 536 59 701 82 34 5 79 18 100 29 24 12
+                                424 406 1010 994 l972 973 40 85 c50 106 66 172 66 275 0 158 -59 303 -169
+                                423 -158 170 -368 252 -570 221z" />
+                            <path d="M502 4465 c-188 -41 -361 -183 -444 -364 -61 -133 -59 -43 -56 -1894
+                                l3 -1692 27 -73 c38 -105 83 -176 158 -252 76 -75 147 -120 252 -158 l73 -27
+                                1615 0 1615 0 85 31 c101 36 177 84 249 157 60 61 81 90 121 168 68 132 64 57
+                                67 1282 2 609 0 1107 -4 1107 -4 0 -223 -215 -488 -478 -500 -498 -511 -507
+                                -642 -553 -57 -20 -797 -119 -891 -119 -76 0 -195 30 -281 72 -119 57 -231
+                                169 -290 288 -42 87 -71 202 -71 286 0 92 99 829 119 887 45 130 56 143 551
+                                642 261 264 524 531 585 593 l110 112 -1200 -1 c-973 0 -1212 -3 -1263 -14z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="panel-option">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                            stroke="none">
+                            <path d="M1405 4674 c-536 -83 -879 -429 -960 -969 -22 -149 -22 -2141 0
+                                -2290 43 -285 151 -503 333 -676 175 -166 398 -265 672 -299 119 -14 2104 -14
+                                2225 1 497 61 849 360 970 824 12 49 28 131 34 180 15 124 15 2106 0 2230 -33
+                                268 -133 492 -296 665 -176 186 -391 292 -676 334 -147 22 -2161 22 -2302 0z
+                                m675 -986 c79 -40 110 -122 79 -205 -13 -36 -513 -538 -555 -558 -40 -19 -95
+                                -19 -137 -1 -52 22 -233 213 -247 261 -25 86 38 184 128 200 48 8 113 -17 151
+                                -59 14 -14 29 -26 34 -26 5 0 96 88 204 195 227 228 249 240 343 193z m1717
+                                -309 c43 -16 92 -69 104 -111 19 -71 -22 -157 -87 -184 -27 -11 -146 -14 -630
+                                -14 -584 0 -597 0 -633 21 -51 29 -74 65 -79 124 -6 77 37 144 104 165 44 13
+                                1186 12 1221 -1z m-1707 -1187 c51 -25 80 -74 80 -134 0 -27 -5 -59 -11 -71
+                                -16 -32 -519 -536 -553 -553 -32 -18 -99 -20 -136 -6 -14 6 -75 61 -136 124
+                                -97 98 -113 119 -119 156 -5 34 -2 52 17 90 54 109 177 125 268 37 l36 -35
+                                184 186 c102 102 199 195 215 205 38 24 109 25 155 1z m1737 -322 c120 -73 92
+                                -253 -45 -289 -30 -8 -214 -11 -619 -9 -562 3 -579 4 -613 24 -105 61 -108
+                                213 -6 275 30 18 60 19 641 19 587 0 611 -1 642 -20z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="panel-option">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                            stroke="none">
+                            <path d="M2455 4946 c-27 -7 -66 -20 -86 -28 -19 -8 -487 -317 -1040 -685
+                                -745 -497 -1016 -683 -1047 -718 -52 -59 -99 -152 -112 -224 -15 -78 -14
+                                -2683 1 -2753 34 -163 147 -293 314 -359 l60 -24 687 -3 687 -3 3 758 3 758
+                                26 55 c37 79 81 125 153 160 l62 31 410 -3 c404 -3 409 -3 452 -26 54 -29 115
+                                -90 142 -141 11 -22 24 -71 30 -108 5 -39 10 -366 10 -775 l0 -708 658 0 c725
+                                0 729 1 846 63 77 41 152 116 193 193 67 125 64 52 61 1541 l-3 1348 -24 60
+                                c-30 76 -82 155 -128 196 -20 17 -487 331 -1037 698 -713 475 -1017 672 -1056
+                                685 -72 23 -201 29 -265 12z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="panel-option">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                            stroke="none">
+                            <path d="M2395 5034 c-206 -21 -239 -27 -306 -61 -133 -66 -194 -167 -210
+                                -347 -10 -115 -19 -146 -66 -239 -64 -123 -203 -227 -341 -256 -118 -25 -242
+                                -7 -353 49 -75 38 -152 60 -210 60 -71 0 -171 -35 -227 -80 -91 -71 -253 -314
+                                -361 -541 -78 -164 -95 -224 -88 -311 11 -128 72 -220 203 -309 84 -56 139
+                                -116 182 -197 80 -151 80 -333 0 -484 -43 -81 -98 -141 -182 -197 -88 -60
+                                -140 -117 -174 -190 -23 -48 -27 -69 -26 -146 0 -78 5 -101 32 -167 105 -256
+                                303 -571 415 -659 55 -44 156 -79 226 -79 58 0 135 22 210 60 291 148 626 11
+                                736 -301 8 -23 20 -92 25 -153 8 -91 15 -122 40 -173 34 -69 105 -139 176
+                                -173 94 -46 418 -71 653 -51 221 20 283 39 371 118 75 67 108 143 120 273 5
+                                58 15 123 21 145 22 80 80 174 145 234 163 153 393 184 595 81 75 -38 152 -60
+                                210 -60 66 0 165 34 222 75 87 64 239 288 353 520 87 177 109 253 100 343 -11
+                                123 -73 216 -202 303 -84 56 -139 116 -182 197 -79 149 -80 327 -3 480 39 78
+                                100 144 185 201 88 60 140 117 174 190 23 48 27 69 26 146 0 78 -5 101 -32
+                                167 -73 179 -169 350 -290 516 -88 123 -149 174 -239 202 -110 34 -198 23
+                                -322 -40 -202 -103 -432 -72 -595 81 -65 60 -123 154 -145 234 -6 22 -16 87
+                                -21 143 -11 124 -37 188 -104 260 -62 66 -134 101 -248 118 -92 14 -415 26
+                                -493 18z m254 -1744 c463 -59 754 -523 606 -967 -133 -396 -574 -601 -965
+                                -446 -368 146 -556 562 -421 933 103 282 362 469 676 489 11 0 58 -4 104 -9z" />
+                        </g>
+                    </svg>
+
+                </div>
+                <div class="panel-option">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="currentColor"
+                            stroke="none">
+                            <path d="M2315 5109 c-800 -83 -1501 -518 -1927 -1196 -604 -961 -490 -2237
+                                274 -3068 425 -462 951 -737 1583 -827 119 -17 512 -16 635 1 622 86 1148 360
+                                1572 820 349 378 572 862 650 1406 17 118 17 512 0 630 -59 416 -191 769 -410
+                                1099 -92 140 -185 254 -315 385 -399 404 -893 653 -1462 737 -123 18 -478 26
+                                -600 13z m633 -1781 c21 -15 47 -43 57 -65 40 -83 43 -74 -275 -768 -161 -352
+                                -302 -652 -312 -667 -24 -35 -95 -68 -147 -68 -51 0 -112 30 -139 67 -27 38
+                                -44 106 -36 140 8 34 565 1251 599 1309 50 84 167 108 253 52z m-1110 -79 c89
+                                -44 131 -146 97 -237 -14 -37 -57 -86 -207 -238 -141 -143 -188 -196 -188
+                                -215 0 -18 43 -67 176 -199 96 -96 187 -195 202 -220 73 -122 -2 -270 -146
+                                -287 -84 -10 -112 11 -378 279 -280 283 -289 296 -289 428 0 132 9 145 289
+                                429 156 157 255 250 281 262 53 25 109 24 163 -2z m1607 2 c60 -28 514 -491
+                                545 -556 34 -71 34 -199 0 -270 -30 -64 -483 -525 -545 -555 -151 -73 -319 81
+                                -260 238 14 37 57 86 207 238 139 141 188 196 188 214 0 18 -48 73 -189 215
+                                -194 195 -221 231 -221 300 0 71 52 153 115 181 43 19 113 17 160 -5z" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        var optionMarker = document.querySelector(".selected-option");
+        var options = document.querySelectorAll(".panel-option");
+        var optionsPanel = document.querySelector(".options-panel");
+        var endPoints = document.querySelectorAll(".endpoint-option");
 
-        document.addEventListener('DOMContentLoaded', () => {
+        endPoints.forEach(end => {
+            end.style.display = "none";
+        });
 
-            const options = document.querySelectorAll('.option');
+        endPoints[0].style.display = "block";
 
+        optionMarker.style.width = (document.body.clientWidth / options.length) + "px";
+
+        options[0].style.textShadow = "var(--panel-text-shadow)";
+        options[0].style.color = "var(--panel-accent-color)";
+
+        // Domyślnie ustaw gradient dla pierwszej opcji:
+        if (options.length > 0) {
             options.forEach(option => {
-                const target = option.getAttribute('dependentSite');
-                if (target) {
-                    option.style.cursor = 'pointer';
-                    option.addEventListener('click', () => {
-                        window.location.href = target;
-                    });
-                }
+                option.style.color = "rgba(255, 255, 255, 0.3)";
+                const g = option.querySelector('g');
+                if (g) g.setAttribute('fill', 'currentColor');
             });
+            options[0].style.color = 'rgba(255,255,255,0.3)'; // lub inny kolor bazowy widoczny przy gradiencie
+            const g0 = options[0].querySelector('g');
+            if (g0) g0.setAttribute('fill', 'url(#myGradient)');
+            endPoints.forEach(end => (end.style.display = 'none'));
+            if (endPoints[0]) endPoints[0].style.display = 'block';
+        }
 
-            const notifsBlocker = document.querySelector('.notifs-blocker');
-            const notifsResponse = document.querySelector('.notifs-response');
+        for (let i = 0; i < options.length; i++) {
+            let opt = options[i];
+            opt.addEventListener("click", function () {
+                optionMarker.style.marginLeft = (parseFloat(optionMarker.style.width) * i) + "px";
 
-            if (Notification.permission === 'granted') {
-                notifsBlocker.style.display = 'none';
-            } else {
-                notifsBlocker.style.display = 'flex';
+                options.forEach(option => {
+                    option.style.color = "rgba(255, 255, 255, 0.3)";
+                    const g = option.querySelector('g');
+                    if (g) g.setAttribute('fill', 'currentColor');
+                });
+
+                this.style.color = 'rgba(255,255,255,0.3)'; // albo inny kolor bazowy, by gradient był widoczny
+                const g = this.querySelector('g');
+                if (g) g.setAttribute('fill', 'url(#myGradient)');
+
+                endPoints.forEach(end => (end.style.display = "none"));
+                endPoints[i].style.display = "block";
+            });
+        }
+
+        var createTaskButton = document.querySelector(".createTaskButton");
+
+        createTaskButton.addEventListener("click", async () => {
+            const kod = `
+        <form id="taskForm" class="task-create-form" method="post">
+            <span>Zadanie dla</span>
+            <select name="name_and_surname" id="userSelect" required>
+                <option>Ładowanie...</option>
+            </select>
+            <span>Opis zadania</span>
+            <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
+            <span>Deadline</span>
+            <div class="task-deadlines">
+                <input type="date" name="deadline_date" />
+                <input type="time" name="deadline_time" />
+            </div>
+            <input type="submit" class="primary-btn" value="Wyślij" />
+        </form>
+    `;
+
+            showPopUp("info", "Popup", kod);
+
+            // teraz pobierz dane do selecta
+            const select = document.getElementById("userSelect");
+            const form = document.getElementById("taskForm");
+
+            try {
+                const response = await fetch("actions/php/get-users.php");
+                if (!response.ok) throw new Error("Błąd sieci");
+
+                const users = await response.json();
+                select.innerHTML = "";
+
+                if (users.length === 0) {
+                    select.innerHTML = "<option>Brak użytkowników</option>";
+                    return;
+                }
+
+                users.forEach(user => {
+                    const option = document.createElement("option");
+                    option.value = user.name + " " + user.surname;
+                    option.textContent = user.name + " " + user.surname;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                select.innerHTML = "<option>Błąd ładowania danych</option>";
+                console.error("Błąd pobierania danych:", error);
             }
 
-            document.getElementById('enableNotifsBtn').addEventListener('click', () => {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        notifsBlocker.style.display = 'none';
+            // obsługa wysyłki
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch("actions/php/createTask.php", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const result = await response.text();
+                    if (result.trim() === "OK") {
+                        alert("Utworzono zadanie!");
+                        form.reset();
+                        fetchTasks2("checkCreatedTasks", "delegated");
                     } else {
-                        notifsResponse.style.display = 'block';
-                        notifsResponse.innerHTML = 'Nie włączyłeś powiadomień. Aplikacja nie będzie działać!';
+                        alert("Błąd: " + result);
                     }
-                });
+                } catch (error) {
+                    alert("Wystąpił błąd sieci: " + error.message);
+                }
             });
         });
+
+
+
     </script>
 </body>
 

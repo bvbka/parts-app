@@ -1,4 +1,4 @@
-function showPopUp(type, title, content) {
+function showPopUp(type="info", title="Pop up!", content="Content") {
     var color = "";
     switch(type) {
         case 'info': color = "blue"; break;
@@ -40,7 +40,7 @@ function showPopUp(type, title, content) {
     var popUpContent = document.createElement("div");
     popUpContent.style.flex = "1";
     popUpContent.style.fontSize = "16px";
-    popUpContent.textContent = content;
+    popUpContent.innerHTML = content;
 
     popUp.appendChild(popUpTitle);
     popUp.appendChild(popUpContent);

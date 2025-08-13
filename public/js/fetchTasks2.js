@@ -1,18 +1,21 @@
-async function fetchTasks() {
+async function fetchTasks2(siteType, containerType) {
 
-    var titleBar = document.querySelector(".tasks-title-bar");
+    const titleBars = document.querySelectorAll('.tasks-title-bar');
 
-    if (siteType == "checkYourTasks") {
-        titleBar.innerHTML = "Do zrobienia";
-    } else if (siteType == "checkCreatedTasks") {
-        titleBar.innerHTML = "Zlecone zadania";
-    }
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 0) {
+            titleBars.forEach(bar => bar.classList.add('scrolled'));
+        } else {
+            titleBars.forEach(bar => bar.classList.remove('scrolled'));
+        }
+    });
+
 
     try {
         if (siteType == "checkYourTasks") {
-            var response = await fetch('php/yourTasks.php');
+            var response = await fetch('actions/php/yourTasks.php');
         } else if (siteType == "checkCreatedTasks") {
-            var response = await fetch('php/tasks_data.php');
+            var response = await fetch('actions/php/tasks_data.php');
         }
         if (!response.ok) {
             if (response.status === 401) {
@@ -23,7 +26,7 @@ async function fetchTasks() {
             throw new Error('Błąd sieci');
         }
         const tasks = await response.json();
-        const container = document.querySelector('.tasksContainer');
+        const container = document.querySelector('.tasksContainer-' + containerType);
         container.innerHTML = '';
 
         function formatDateToPolish(dateString) {
@@ -47,7 +50,7 @@ async function fetchTasks() {
 
         async function changeTaskStatus(taskId, newStatus) {
             try {
-                const response = await fetch('php/changeTaskStatus.php', {
+                const response = await fetch('actions/php/changeTaskStatus.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ task_id: taskId, new_status: newStatus })
@@ -67,45 +70,79 @@ async function fetchTasks() {
             }
         }
 
+        const showMoreTasks = document.createElement("details");
+        const showMoreTasksSummary = document.createElement("summary");
+
+        if (siteType == "checkCreatedTasks") {
+            showMoreTasksSummary.innerHTML = "Pokaż zadania w toku / zakończone";
+        } else {
+            showMoreTasksSummary.innerHTML = "Pokaż zrealizowane / odrzucone zadania";
+        }
+
+        showMoreTasks.appendChild(showMoreTasksSummary);
+        var countOtherTasks = 0;
+
         tasks.forEach(task => {
             const div = document.createElement('div');
             div.className = 'task';
-            div.style.borderLeft = `7px solid ${colorMap[task.status] || '#ccc'}`;
 
-            // Tytuł zadania
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'task-title';
-            titleDiv.textContent = "(#" + task.task_id + ") " + task.summary;
+            let summary = task.summary;
+            let status = task.status;
+            let assignee = task.name + ' ' + task.surname[0] + '.';
+            let deadline = "";
 
-            // Czas utworzenia i deadline
-            const timesDiv = document.createElement('div');
-            timesDiv.className = 'task-times';
+            if (task.deadline_date != "0000-00-00") {
+                deadline = formatDateToPolish(task.deadline_date) + ", " + cutSeconds(task.deadline_time);
+            } else deadline = "Brak terminu";
 
-            const creation = document.createElement('span');
-            const deadline = document.createElement('span');
-            creation.innerHTML = "<b>📅 Zlecono:</b> <span>" + formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time) + "</span>";
-
-            timesDiv.appendChild(creation);
-
-            if (task.deadline_date != undefined && task.deadline_time != undefined) {
-                deadline.innerHTML = "<b>⏳ Termin:</b><span>" + formatDateToPolish(task.deadline_date) + ", " + cutSeconds(task.deadline_time) + "</span>";
-                timesDiv.appendChild(deadline);
-            } else {
-                deadline.innerHTML = "<b>⏳ Termin:</b><span>Brak terminu</span>";
-                timesDiv.appendChild(deadline);
+            var additionalInfoMap = {
+                "ID zadania:": task.task_id,
+                "Data utworzenia:": formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time),
+                "Termin:": deadline,
             }
 
+            const firstTaskLine = document.createElement("div");
+            firstTaskLine.classList.add("first-task-line");
 
-            // Szczegóły zadania
-            const detailsDiv = document.createElement('div');
-            detailsDiv.className = 'task-details';
-            // Przypisany
-            const assigneeSpan = document.createElement('span');
-            assigneeSpan.textContent = '👤 ' + task.name + ' ' + task.surname;
-            // Status
-            const statusSpan = document.createElement('span');
-            statusSpan.innerHTML = "<b>" + statusMap[task.status] + "</b>" || task.status;
+            const taskAssignee = document.createElement("span");
+            taskAssignee.innerHTML = assignee;
+            taskAssignee.style.fontWeight = "bold";
+            taskAssignee.style.display = "flex";
+            taskAssignee.style.justifyContent = "center";
+            taskAssignee.style.alignItems = "center";
 
+            const taskStatus = document.createElement("span");
+            taskStatus.classList.add("status-span");
+            taskStatus.style.backgroundColor = colorMap[status];
+            taskStatus.innerHTML = statusMap[status];
+            taskStatus.style.boxShadow = "0 0 10px 0 " + colorMap[status];
+
+            firstTaskLine.append(taskAssignee, taskStatus);
+
+
+            const secondTaskLine = document.createElement("div");
+            secondTaskLine.classList.add("second-task-line");
+
+            const taskSummary = document.createElement("span");
+            taskSummary.innerHTML = summary;
+
+            secondTaskLine.append(taskSummary);
+
+            const taskAdditionalInfo = document.createElement("div");
+            taskAdditionalInfo.classList.add("additional-info");
+
+            for (let i = 0; i < Object.keys(additionalInfoMap).length; i++) {
+                let additionalDiv = document.createElement("div");
+                additionalDiv.classList.add("additional-div");
+                let additionalTitle = document.createElement("span");
+                let additionalValue = document.createElement("span");
+                additionalTitle.innerHTML = Object.keys(additionalInfoMap)[i];
+                additionalValue.innerHTML = additionalInfoMap[Object.keys(additionalInfoMap)[i]];
+                additionalDiv.append(additionalTitle, additionalValue);
+                taskAdditionalInfo.append(additionalDiv);
+            }
+
+            div.append(firstTaskLine, secondTaskLine, taskAdditionalInfo);
 
             // Przyciski akcji
             if ((task.status == "new" && siteType == "checkYourTasks") || (task.status == "accepted" && siteType == "checkYourTasks") || (task.status == "verify" && siteType == "checkCreatedTasks")) {
@@ -206,35 +243,39 @@ async function fetchTasks() {
                     };
 
                     buttonsDiv.append(primBtn, secBtn);
-
-
                 }
 
             }
 
-
-            // Podpinanie elementów HTML
-            detailsDiv.appendChild(assigneeSpan);
-            detailsDiv.appendChild(statusSpan);
-
-            div.appendChild(titleDiv);
-            div.appendChild(document.createElement("hr"));
-            div.appendChild(timesDiv);
-            div.appendChild(document.createElement("hr"));
-            div.appendChild(detailsDiv);
             if ((task.status == "new" && siteType == "checkYourTasks") || (task.status == "accepted" && siteType == "checkYourTasks") || (task.status == "verify" && siteType == "checkCreatedTasks")) {
                 div.appendChild(buttonsDiv);
             }
 
-            container.appendChild(div);
+            if (siteType == "checkCreatedTasks" && (status == "verify" || status == "rejected")) {
+                container.appendChild(div);
+            } else if (siteType == "checkYourTasks" && (status == "new" || status == "accepted")) {
+                container.appendChild(div);
+            } else {
+                countOtherTasks++;
+                showMoreTasks.appendChild(div);
+            }
         });
 
-        document.querySelectorAll('.task').forEach(task => {
+        if (countOtherTasks != 0) {
+            container.appendChild(showMoreTasks);
+        }
+
+        document.querySelectorAll('.tasksContainer-' + containerType + ' .task').forEach(task => {
             task.addEventListener('click', function () {
                 let buttonDiv = task.lastChild;
                 if (buttonDiv.classList.contains("task-buttons")) {
                     buttonDiv.style.display = (buttonDiv.style.display === "flex") ? "none" : "flex";
                 }
+                let additionalInfo = task.querySelector(".additional-info");
+                additionalInfo.style.display = (additionalInfo.style.display === "flex") ? "none" : "flex";
+
+                let secondTaskLine = task.querySelector(".second-task-line");
+                secondTaskLine.style.webkitLineClamp = (secondTaskLine.style.webkitLineClamp === "1000") ? "1" : "1000";
             });
         });
 

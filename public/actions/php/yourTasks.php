@@ -34,7 +34,7 @@ if (!$conn) {
     exit;
 }
 
-$sql = "SELECT task_id, summary, status, name, surname, creation_date, creation_time
+$sql = "SELECT task_id, summary, status, name, surname, creation_date, creation_time, deadline_date, deadline_time
         FROM tasks
         JOIN users ON assignee_alias = alias
         WHERE assignee_alias = '$alias'
