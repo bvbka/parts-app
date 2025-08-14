@@ -1,0 +1,57 @@
+.main-options-panel {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+}
+
+.options-panel {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+}
+
+.panel-option {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.panel-option svg {
+    width: 30%;
+    height: auto;
+}
+
+.navigation-bar {
+    width: 100%;
+    height: fit-content;
+    position: fixed;
+    bottom: 0;
+    background: linear-gradient(to top, #2b285b, #352f6d);
+    box-shadow: 0 0 24px 16px rgba(0, 0, 0, 0.3);
+}
+
+.selected-option-panel {
+    width: 100%;
+    height: 5px;
+}
+
+.selected-option {
+    background: var(--panel-accent-color);
+    height: 5px;
+    transition: all 0.1s ease-in-out;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #de16b4, #de16b4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* dla innych przeglądarek */
+    background-clip: text;
+    color: transparent;
+}

@@ -10,7 +10,7 @@ async function fetchRefuelings() {
             throw new Error('Błąd sieci');
         }
         const refuelings = await response.json();
-        const container = document.querySelector('.tasksContainer');
+        const container = document.querySelectorAll('.appContainer')[1];
         container.innerHTML = '';
 
         function formatDateToPolish(dateString) {
@@ -35,17 +35,17 @@ async function fetchRefuelings() {
         refuelings.forEach(refuel => {
             console.log(refuel);
             const div = document.createElement('div');
-            div.className = 'task';
+            div.className = 'box';
 
             var additionalInfoMap = {
                 "Litry przed tankowaniem:": refuel.liters_before,
                 "Litry po tankowaniu:": refuel.liters_after
             }
 
-            const firstTaskLine = document.createElement("div");
-            firstTaskLine.classList.add("first-task-line");
+            const firstBoxLine = document.createElement("div");
+            firstBoxLine.classList.add("first-box-line");
 
-            const taskAssignee = document.createElement("span");
+            const registrationNumber = document.createElement("span");
             // var registration = "";
             async function getRegistration() {
                 try {
@@ -66,7 +66,7 @@ async function fetchRefuelings() {
                     let registration = await response.text();
                     console.log("Registration:", registration);
 
-                    taskAssignee.innerHTML = registration;
+                    registrationNumber.innerHTML = registration;
 
                 } catch (error) {
                     console.error("Wystąpił błąd:", error);
@@ -75,26 +75,26 @@ async function fetchRefuelings() {
 
             // Wywołanie
             getRegistration();
-            taskAssignee.style.fontWeight = "bold";
+            registrationNumber.style.fontWeight = "bold";
 
-            const taskStatus = document.createElement("span");
-            taskStatus.innerHTML = refuel.liters_after - refuel.liters_before + " L";
+            const totalLiters = document.createElement("span");
+            totalLiters.innerHTML = refuel.liters_after - refuel.liters_before + " L";
 
-            firstTaskLine.append(taskAssignee, taskStatus);
+            firstBoxLine.append(registrationNumber, totalLiters);
 
 
-            const secondTaskLine = document.createElement("div");
-            secondTaskLine.classList.add("second-task-line");
+            const secondBoxLine = document.createElement("div");
+            secondBoxLine.classList.add("second-box-line");
 
-            const taskSummary = document.createElement("span");
-            taskSummary.innerHTML = refuel.car_mileage + " km";
-            const taskSummary2 = document.createElement("span");
-            taskSummary2.innerHTML = formatDateToPolish(refuel.refueling_date) + " " + cutSeconds(refuel.refueling_time);
+            const carMileage = document.createElement("span");
+            carMileage.innerHTML = refuel.car_mileage + " km";
+            const carMileage2 = document.createElement("span");
+            carMileage2.innerHTML = formatDateToPolish(refuel.refueling_date) + " " + cutSeconds(refuel.refueling_time);
 
-            secondTaskLine.append(taskSummary, taskSummary2);
+            secondBoxLine.append(carMileage, carMileage2);
 
-            const taskAdditionalInfo = document.createElement("div");
-            taskAdditionalInfo.classList.add("additional-info");
+            const boxAdditionalInfo = document.createElement("div");
+            boxAdditionalInfo.classList.add("additional-info");
 
             for (let i = 0; i < Object.keys(additionalInfoMap).length; i++) {
                 let additionalDiv = document.createElement("div");
@@ -104,17 +104,17 @@ async function fetchRefuelings() {
                 additionalTitle.innerHTML = Object.keys(additionalInfoMap)[i];
                 additionalValue.innerHTML = additionalInfoMap[Object.keys(additionalInfoMap)[i]];
                 additionalDiv.append(additionalTitle, additionalValue);
-                taskAdditionalInfo.append(additionalDiv);
+                boxAdditionalInfo.append(additionalDiv);
             }
 
-            div.append(firstTaskLine, secondTaskLine, taskAdditionalInfo);
+            div.append(firstBoxLine, secondBoxLine, boxAdditionalInfo);
 
             container.appendChild(div);
         });
 
-        document.querySelectorAll('.tasksContainer .task').forEach(task => {
-            task.addEventListener('click', function () {
-                let additionalInfo = task.querySelector(".additional-info");
+        document.querySelectorAll('.appContainer .box').forEach(box => {
+            box.addEventListener('click', function () {
+                let additionalInfo = box.querySelector(".additional-info");
                 additionalInfo.style.display = (additionalInfo.style.display === "flex") ? "none" : "flex";
             });
         });

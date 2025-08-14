@@ -1,0 +1,34 @@
+.create-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.create-form select, input{
+    width: 300px;
+    font-size: 20px;
+    margin: 5px 0 20px 0;
+    height: 45px;
+}
+
+.create-form span {
+    font-size: 30px;
+    color: white;
+}
+
+.create-form textarea {
+    width: 300px;
+    font-size: 20px;
+    height: 100px;
+    margin: 5px 0 20px 0;
+}
+
+.create-form .box-deadlines {
+    width: 300px;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 5px 0 20px 0;
+}

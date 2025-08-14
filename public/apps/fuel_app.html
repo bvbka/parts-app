@@ -9,7 +9,12 @@
     <script src="../js/fetchRefuelings.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/statsWidgets.css" />
+    <link rel="stylesheet" href="../css/creatingForm.css" />
+    <link rel="stylesheet" href="../css/bottomNavBar.css" />
+    <link rel="stylesheet" href="../css/appTitleBar.css" />
+    <link rel="stylesheet" href="../css/appBoxList.css" />
     <title>DEV TEST</title>
 </head>
 
@@ -17,14 +22,14 @@
     <div class="main-options-panel">
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar-delegated tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Zatankuj</span>
                     <span>Dodaj nowe tankowanie</span>
                 </div>
             </div>
-            <div class="refuelContainer">
-                <form id="refuelForm" class="refuel-create-form" method="post">
+            <div class="appContainer">
+                <form id="refuelForm" class="create-form" method="post">
                     <span>Zadanie dla</span>
                     <select name="registration" id="carSelect" required>
                         <option>Ładowanie...</option>
@@ -153,16 +158,16 @@
         </div>
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar-mine tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Historia</span>
                     <span>Lista Twoich tankowań</span>
                 </div>
-                <div class="tasks-title-bar-button">
-                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                <div class="app-title-bar-button">
+                    
                 </div>
             </div>
-            <div class="tasksContainer-mine tasksContainer">
+            <div class="appContainer">
                 <script>
                     fetchRefuelings();
                 </script>
@@ -172,8 +177,8 @@
         </div>
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Statystyki</span>
                     <span>Podsumowanie graficzne</span>
                 </div>
@@ -223,7 +228,6 @@
 
         optionMarker.style.width = (document.body.clientWidth / options.length) + "px";
 
-        options[0].style.textShadow = "var(--panel-text-shadow)";
         options[0].style.color = "var(--panel-accent-color)";
 
         // Domyślnie ustaw gradient dla pierwszej opcji:
@@ -260,7 +264,7 @@
             });
         }
 
-        const titleBars = document.querySelectorAll('.tasks-title-bar');
+        const titleBars = document.querySelectorAll('.app-title-bar');
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 0) {

@@ -12,7 +12,12 @@
     <script src="../js/countOpenClosedTasks.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/statsWidgets.css" />
+    <link rel="stylesheet" href="../css/creatingForm.css" />
+    <link rel="stylesheet" href="../css/bottomNavBar.css" />
+    <link rel="stylesheet" href="../css/appTitleBar.css" />
+    <link rel="stylesheet" href="../css/appBoxList.css" />
     <title>DEV TEST</title>
 </head>
 
@@ -29,16 +34,16 @@
     <div class="main-options-panel">
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar-delegated tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar-delegated app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Zlecone</span>
                     <span>Zadania dla kogoś</span>
                 </div>
-                <div class="tasks-title-bar-button">
+                <div class="app-title-bar-button">
                     <button class="createTaskButton"><img src="../img/plus.png" /></button>
                 </div>
             </div>
-            <div class="tasksContainer-delegated tasksContainer"></div>
+            <div class="appContainer-delegated appContainer"></div>
 
             <script>
                 fetchTasks2("checkCreatedTasks", "delegated");
@@ -46,16 +51,16 @@
         </div>
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar-mine tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar-mine app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Do zrobienia</span>
                     <span>Zadanie od kogoś</span>
                 </div>
-                <div class="tasks-title-bar-button">
+                <div class="app-title-bar-button">
                     <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
                 </div>
             </div>
-            <div class="tasksContainer-mine tasksContainer"></div>
+            <div class="appContainer-mine appContainer"></div>
 
             <script>
                 fetchTasks2("checkYourTasks", "mine");
@@ -63,49 +68,49 @@
         </div>
 
         <div class="endpoint-option">
-            <div class="tasks-title-bar">
-                <div class="tasks-title-bar-description">
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
                     <span>Statystyki</span>
                     <span>Zadania do wykonania</span>
                 </div>
-                <div class="tasks-title-bar-button">
+                <div class="app-title-bar-button">
                     <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
                 </div>
             </div>
-            <div class="stats-container">
-                <div class="task-widget">
-                    <div class="task-widget-text">Otwarte vs zamknięte</div>
+            <div class="appContainer">
+                <div class="widget">
+                    <div class="widget-text">Otwarte vs zamknięte</div>
                 </div>
-                <div class="task-widget double-data">
-                    <div class="task-widget-double-first">
+                <div class="widget double-data">
+                    <div class="widget-double-first">
                         <span></span><br>
                         <span>Zadań zamkniętych</span>
                     </div>
-                    <div class="task-widget-double-second">
+                    <div class="widget-double-second">
                         <span></span><br>
                         <span>Zadań otwartych</span>
                     </div>
                     <script>
                         countOpenClosedTasks().then(map => {
                             // console.log(map); // { open: 9, closed: 3 }
-                            var first = document.querySelector(".task-widget-double-first span");
-                            var second = document.querySelector(".task-widget-double-second span");
+                            var first = document.querySelector(".widget-double-first span");
+                            var second = document.querySelector(".widget-double-second span");
 
                             first.innerHTML = Object.values(map)[1];
                             second.innerHTML = Object.values(map)[0];
                         });
                     </script>
                 </div>
-                <div class="task-widget">
-                    <div class="task-widget-text">Twoje zadania</div>
+                <div class="widget">
+                    <div class="widget-text">Twoje zadania</div>
                 </div>
-                <div class="task-widget task-pie-chart">
-                    <div class="task-pie-chart-canvas">
+                <div class="widget widget-pie-chart">
+                    <div class="widget-pie-chart-canvas">
                         <canvas id="statusPieChart"></canvas>
                     </div>
                 </div>
-                <div class="task-widget">
-                    <div class="task-widget-text">Ostatni miesiąc</div>
+                <div class="widget">
+                    <div class="widget-text">Ostatni miesiąc</div>
                 </div>
             </div>
         </div>
@@ -254,7 +259,6 @@
 
         optionMarker.style.width = (document.body.clientWidth / options.length) + "px";
 
-        options[0].style.textShadow = "var(--panel-text-shadow)";
         options[0].style.color = "var(--panel-accent-color)";
 
         // Domyślnie ustaw gradient dla pierwszej opcji:
@@ -295,7 +299,7 @@
 
         createTaskButton.addEventListener("click", async () => {
             const kod = `
-        <form id="taskForm" class="task-create-form" method="post">
+        <form id="taskForm" class="create-form" method="post">
             <span>Zadanie dla</span>
             <select name="name_and_surname" id="userSelect" required>
                 <option>Ładowanie...</option>
@@ -303,7 +307,7 @@
             <span>Opis zadania</span>
             <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
             <span>Deadline</span>
-            <div class="task-deadlines">
+            <div class="box-deadlines">
                 <input type="date" name="deadline_date" />
                 <input type="time" name="deadline_time" />
             </div>
@@ -365,7 +369,7 @@
             });
         });
 
-        const titleBars = document.querySelectorAll('.tasks-title-bar');
+        const titleBars = document.querySelectorAll('.app-title-bar');
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 0) {

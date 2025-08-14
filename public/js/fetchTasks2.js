@@ -16,7 +16,7 @@ async function fetchTasks2(siteType, containerType) {
             throw new Error('Błąd sieci');
         }
         const tasks = await response.json();
-        const container = document.querySelector('.tasksContainer-' + containerType);
+        const container = document.querySelector('.appContainer-' + containerType);
         container.innerHTML = '';
 
         function formatDateToPolish(dateString) {
@@ -74,7 +74,7 @@ async function fetchTasks2(siteType, containerType) {
 
         tasks.forEach(task => {
             const div = document.createElement('div');
-            div.className = 'task';
+            div.className = 'box';
 
             let summary = task.summary;
             let status = task.status;
@@ -92,7 +92,7 @@ async function fetchTasks2(siteType, containerType) {
             }
 
             const firstTaskLine = document.createElement("div");
-            firstTaskLine.classList.add("first-task-line");
+            firstTaskLine.classList.add("first-box-line");
 
             const taskAssignee = document.createElement("span");
             taskAssignee.innerHTML = assignee;
@@ -111,7 +111,7 @@ async function fetchTasks2(siteType, containerType) {
 
 
             const secondTaskLine = document.createElement("div");
-            secondTaskLine.classList.add("second-task-line");
+            secondTaskLine.classList.add("second-box-line");
 
             const taskSummary = document.createElement("span");
             taskSummary.innerHTML = summary;
@@ -137,7 +137,7 @@ async function fetchTasks2(siteType, containerType) {
             // Przyciski akcji
             if ((task.status == "new" && siteType == "checkYourTasks") || (task.status == "accepted" && siteType == "checkYourTasks") || (task.status == "verify" && siteType == "checkCreatedTasks")) {
                 var buttonsDiv = document.createElement("div");
-                buttonsDiv.classList.add("task-buttons");
+                buttonsDiv.classList.add("box-buttons");
 
                 if (task.status == "new" && siteType == "checkYourTasks") {
                     var primBtn = document.createElement("input");
@@ -255,7 +255,7 @@ async function fetchTasks2(siteType, containerType) {
             container.appendChild(showMoreTasks);
         }
 
-        document.querySelectorAll('.tasksContainer-' + containerType + ' .task').forEach(task => {
+        document.querySelectorAll('.appContainer-' + containerType + ' .box').forEach(task => {
             task.addEventListener('click', function () {
                 let buttonDiv = task.lastChild;
                 if (buttonDiv.classList.contains("task-buttons")) {
@@ -264,7 +264,7 @@ async function fetchTasks2(siteType, containerType) {
                 let additionalInfo = task.querySelector(".additional-info");
                 additionalInfo.style.display = (additionalInfo.style.display === "flex") ? "none" : "flex";
 
-                let secondTaskLine = task.querySelector(".second-task-line");
+                let secondTaskLine = task.querySelector(".second-box-line");
                 secondTaskLine.style.webkitLineClamp = (secondTaskLine.style.webkitLineClamp === "1000") ? "1" : "1000";
             });
         });
