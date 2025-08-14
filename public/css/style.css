@@ -283,7 +283,7 @@ details[open] summary {
     box-shadow: 0 0 24px 16px rgba(0, 0, 0, 0.4);
 }
 
-.tasksContainer {
+.tasksContainer, .refuelContainer {
     padding-top: 80px;
     padding-bottom: 65px;
 }
@@ -314,11 +314,10 @@ details[open] summary {
 
 .second-task-line {
     width: 100%;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    display: flex;
     overflow: hidden;
     margin-top: 6px;
+    justify-content: space-between;
 }
 
 .additional-info {
@@ -396,12 +395,6 @@ details[open] summary {
     display: flex;
     justify-content: space-evenly;
     margin: 5px 0 20px 0;
-}
-
-#message {
-    margin-top: 10px;
-    font-size: 18px;
-    color: yellow;
 }
 
 
@@ -622,4 +615,29 @@ details[open] summary {
 }
 .task-widget-double-second{
     background: linear-gradient(to right, #e63636cd, rgba(0,0,0, 0));
+}
+
+
+/* REFUEL CREATE */
+
+.refuel-create-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.refuel-create-form span {
+    font-size: 30px;
+    color: white;
+}
+
+.refuel-create-form select, input{
+    width: 300px;
+    font-size: 20px;
+    margin: 5px 0 20px 0;
+    height: 45px;
 }

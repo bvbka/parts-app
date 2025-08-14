@@ -1,1 +1,276 @@
-Apka w budowie :)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script src="../js/check_session.js"></script>
+    <script src="../js/popUp.js"></script>
+    <script src="../js/fetchRefuelings.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link rel="stylesheet" href="../css/style.css" />
+    <title>DEV TEST</title>
+</head>
+
+<body>
+    <div class="main-options-panel">
+
+        <div class="endpoint-option">
+            <div class="tasks-title-bar-delegated tasks-title-bar">
+                <div class="tasks-title-bar-description">
+                    <span>Zatankuj</span>
+                    <span>Dodaj nowe tankowanie</span>
+                </div>
+            </div>
+            <div class="refuelContainer">
+                <form id="refuelForm" class="refuel-create-form" method="post">
+                    <span>Zadanie dla</span>
+                    <select name="registration" id="carSelect" required>
+                        <option>Ładowanie...</option>
+                    </select>
+
+                    <span>Litry przed tankowaniem</span>
+                    <input type="text" name="liters_before" class="decimal-only" inputmode="decimal" required />
+
+                    <span>Litry po tankowaniu</span>
+                    <input type="text" name="liters_after" class="decimal-only" inputmode="decimal" required />
+
+                    <span>Stan licznika</span>
+                    <input type="text" name="car_mileage" class="int-only" inputmode="numeric" required />
+
+                    <input type="submit" class="primary-btn" value="Wyślij" />
+                </form>
+
+                <script>
+                    (function () {
+                        const form = document.getElementById('refuelForm');
+                        const DECIMAL_RE = /^\d*([.,]\d*)?$/;
+                        const INTEGER_RE = /^\d*$/;
+
+                        function attachGuards(el, regex, pasteCleaner) {
+                            el.addEventListener('beforeinput', function (e) {
+                                if (e.inputType !== 'insertText') return;
+                                const ch = e.data || '';
+                                const s = el.selectionStart, t = el.selectionEnd;
+                                const next = el.value.slice(0, s) + ch + el.value.slice(t);
+                                if (!regex.test(next)) e.preventDefault();
+                            });
+                            el.addEventListener('paste', function (e) {
+                                e.preventDefault();
+                                const raw = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                const clean = pasteCleaner(raw);
+                                const s = el.selectionStart, t = el.selectionEnd;
+                                el.setRangeText(clean, s, t, 'end');
+                            });
+                        }
+
+                        function cleanDecimalPaste(text) {
+                            let v = text.replace(/[^0-9.,]/g, '');
+                            const i = v.search(/[.,]/);
+                            if (i !== -1) {
+                                const sep = v[i];
+                                const before = v.slice(0, i);
+                                const after = v.slice(i + 1).replace(/[.,]/g, '');
+                                v = before + sep + after;
+                            }
+                            return v;
+                        }
+
+                        function cleanIntPaste(text) {
+                            return text.replace(/\D/g, '');
+                        }
+
+                        document.querySelectorAll('.decimal-only').forEach(function (el) {
+                            attachGuards(el, DECIMAL_RE, cleanDecimalPaste);
+                        });
+
+                        document.querySelectorAll('.int-only').forEach(function (el) {
+                            attachGuards(el, INTEGER_RE, cleanIntPaste);
+                        });
+
+                        form.addEventListener('submit', function () {
+                            form.querySelectorAll('.decimal-only').forEach(function (el) {
+                                el.value = (el.value || '').replace(',', '.');
+                            });
+                        });
+                    })();
+
+                    const select = document.getElementById("carSelect");
+
+                    async function getCars() {
+                        try {
+                            const response = await fetch("php/get-cars.php");
+                            if (!response.ok) throw new Error("Błąd sieci");
+
+                            const cars = await response.json();
+                            select.innerHTML = "";
+
+                            if (cars.length === 0) {
+                                select.innerHTML = "<option>Brak samochodów</option>";
+                            } else {
+                                cars.forEach(car => {
+                                    const option = document.createElement("option");
+                                    option.value = car.registration;
+                                    option.textContent = car.registration;
+                                    select.appendChild(option);
+                                });
+                            }
+                        } catch (error) {
+                            select.innerHTML = "<option>Błąd ładowania danych</option>";
+                            console.error("Błąd pobierania danych:", error);
+                        }
+                    }
+                    getCars();
+
+                    const form = document.getElementById("refuelForm");
+                    console.log(form);
+
+                    // obsługa wysyłki
+                    form.addEventListener("submit", async (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(form);
+
+                        try {
+                            const response = await fetch("php/createRefuel.php", {
+                                method: "POST",
+                                body: formData
+                            });
+
+                            const result = await response.text();
+                            if (result.trim() === "OK") {
+                                alert("Zarejestrowano tankowanie!");
+                                form.reset();
+                            } else {
+                                alert("Błąd: " + result);
+                            }
+                        } catch (error) {
+                            alert("Wystąpił błąd sieci: " + error.message);
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="endpoint-option">
+            <div class="tasks-title-bar-mine tasks-title-bar">
+                <div class="tasks-title-bar-description">
+                    <span>Historia</span>
+                    <span>Lista Twoich tankowań</span>
+                </div>
+                <div class="tasks-title-bar-button">
+                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                </div>
+            </div>
+            <div class="tasksContainer-mine tasksContainer">
+                <script>
+                    fetchRefuelings();
+                </script>
+            </div>
+
+
+        </div>
+
+        <div class="endpoint-option">
+            <div class="tasks-title-bar">
+                <div class="tasks-title-bar-description">
+                    <span>Statystyki</span>
+                    <span>Podsumowanie graficzne</span>
+                </div>
+            </div>
+            <div class="stats-container">
+
+            </div>
+        </div>
+
+
+        <div class="endpoint-option">
+            W BUDOWIE
+        </div>
+
+        <div class="navigation-bar">
+            <div class="selected-option-panel">
+                <div class="selected-option"></div>
+            </div>
+            <div class="options-panel">
+                <div class="panel-option">
+                    X
+                </div>
+                <div class="panel-option">
+                    X
+                </div>
+                <div class="panel-option">
+                    X
+                </div>
+                <div class="panel-option">
+                    X
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var optionMarker = document.querySelector(".selected-option");
+        var options = document.querySelectorAll(".panel-option");
+        var optionsPanel = document.querySelector(".options-panel");
+        var endPoints = document.querySelectorAll(".endpoint-option");
+
+        endPoints.forEach(end => {
+            end.style.display = "none";
+        });
+
+        endPoints[0].style.display = "block";
+
+        optionMarker.style.width = (document.body.clientWidth / options.length) + "px";
+
+        options[0].style.textShadow = "var(--panel-text-shadow)";
+        options[0].style.color = "var(--panel-accent-color)";
+
+        // Domyślnie ustaw gradient dla pierwszej opcji:
+        if (options.length > 0) {
+            options.forEach(option => {
+                option.style.color = "rgba(255, 255, 255, 0.3)";
+                const g = option.querySelector('g');
+                if (g) g.setAttribute('fill', 'currentColor');
+            });
+            options[0].style.color = 'rgba(255,255,255,0.3)'; // lub inny kolor bazowy widoczny przy gradiencie
+            const g0 = options[0].querySelector('g');
+            if (g0) g0.setAttribute('fill', 'url(#myGradient)');
+            endPoints.forEach(end => (end.style.display = 'none'));
+            if (endPoints[0]) endPoints[0].style.display = 'block';
+        }
+
+        for (let i = 0; i < options.length; i++) {
+            let opt = options[i];
+            opt.addEventListener("click", function () {
+                optionMarker.style.marginLeft = (parseFloat(optionMarker.style.width) * i) + "px";
+
+                options.forEach(option => {
+                    option.style.color = "rgba(255, 255, 255, 0.3)";
+                    const g = option.querySelector('g');
+                    if (g) g.setAttribute('fill', 'currentColor');
+                });
+
+                this.style.color = 'rgba(255,255,255,0.3)'; // albo inny kolor bazowy, by gradient był widoczny
+                const g = this.querySelector('g');
+                if (g) g.setAttribute('fill', 'url(#myGradient)');
+
+                endPoints.forEach(end => (end.style.display = "none"));
+                endPoints[i].style.display = "block";
+            });
+        }
+
+        const titleBars = document.querySelectorAll('.tasks-title-bar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                titleBars.forEach(bar => bar.classList.add('scrolled'));
+            } else {
+                titleBars.forEach(bar => bar.classList.remove('scrolled'));
+            }
+        });
+
+    </script>
+</body>
+
+</html>
