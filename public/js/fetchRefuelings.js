@@ -1,37 +1,36 @@
+var lineChartData = [];
+const acceptableFuelConsumption = 11.5;
+
 async function fetchRefuelings() {
-
-    const acceptableFuelConsumption = 10.5;
-
+    lineChartData = []; // <--- tu
     try {
-        var response = await fetch('php/yourRefuelings.php');
+        const response = await fetch('php/yourRefuelings.php');
         if (!response.ok) {
             if (response.status === 401) {
-                // Jeśli nie jest zalogowany, przekieruj
                 window.location.href = 'index.html';
-                return;
+                return [];
             }
             throw new Error('Błąd sieci');
         }
+
         const refuelings = await response.json();
         const container = document.querySelectorAll('.appContainer')[1];
         container.innerHTML = '';
 
         async function updateCarMileage(refuelId, newMileage) {
             try {
-                const response = await fetch('php/updateCarMileage.php', {
+                const res = await fetch('php/updateCarMileage.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ refuel_id: refuelId, new_mileage: newMileage })
                 });
-
-                const text = await response.text();
-
+                const text = await res.text();
                 if (text.trim() === 'OK') {
                     fetchRefuelings();
-                    return true;  // sukces
+                    return true;
                 } else {
                     console.error('Błąd z serwera:', text);
-                    return false; // błąd
+                    return false;
                 }
             } catch (err) {
                 console.error('Błąd sieci lub inny:', err);
@@ -40,186 +39,109 @@ async function fetchRefuelings() {
         }
 
         async function getNextRefuelingReportIfExist(refuelId, carRegistrationId) {
-            const response = await fetch('php/checkNextRefueling.php', {
+            const res = await fetch('php/checkNextRefueling.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ refuel_id: refuelId, registration_id: carRegistrationId })
             });
-            if (!response.ok) throw new Error('Błąd sieci');
-
-            const test = await response.text();
-            return test != "Brak" ? parseFloat(test) : 0;
+            if (!res.ok) throw new Error('Błąd sieci');
+            const txt = await res.text();
+            return txt !== "Brak" ? parseFloat(txt) : 0;
         }
 
         function formatDateToPolish(dateString) {
             const [year, month, day] = dateString.split('-');
-            const monthNames = [
-                '', // żeby indeks 1 był dla stycznia
-                'stycznia', 'lutego', 'marca', 'kwietnia',
-                'maja', 'czerwca', 'lipca', 'sierpnia',
-                'września', 'października', 'listopada', 'grudnia'
-            ];
-
-            const dayNum = parseInt(day, 10); // usunięcie zera wiodącego
-            const monthNum = parseInt(month, 10);
-
-            return `${dayNum} ${monthNames[monthNum]}`;
+            const monthNames = ['', 'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+            return `${parseInt(day, 10)} ${monthNames[parseInt(month, 10)]}`;
         }
 
         function cutSeconds(timeString) {
             return timeString.split(':').slice(0, 2).join(':');
         }
 
-        refuelings.forEach(refuel => {
-            const div = document.createElement('div');
-            div.className = 'box';
+        const promises = refuelings.map(async refuel => {
+            const registrationSpan = document.createElement("span");
+            registrationSpan.style.fontWeight = "bold";
 
-            var additionalInfoMap = {
+            // pobranie rejestracji
+            try {
+                const formData = new FormData();
+                formData.append("car_id", refuel.registration_id);
+                const regRes = await fetch("php/get-registration.php", { method: "POST", body: formData });
+                if (regRes.ok) registrationSpan.innerHTML = await regRes.text();
+            } catch (e) { console.error(e); }
+
+            const firstBoxLine = document.createElement("div");
+            firstBoxLine.classList.add("first-box-line");
+            const refuelingDate = document.createElement("span");
+            refuelingDate.innerHTML = formatDateToPolish(refuel.refueling_date) + " " + cutSeconds(refuel.refueling_time);
+            firstBoxLine.append(registrationSpan, refuelingDate);
+
+            const secondBoxLine = document.createElement("div");
+            secondBoxLine.classList.add("second-box-line");
+            const carMileage = document.createElement("span");
+            const checkIfCarMileageAfterEqualsZero = refuel.car_mileage_after == 0;
+            carMileage.innerHTML = checkIfCarMileageAfterEqualsZero ? "Brak trasy" : (refuel.car_mileage_after - refuel.car_mileage) + " km";
+            const totalLiters = document.createElement("span");
+            totalLiters.innerHTML = "Spalanie nieznane";
+            secondBoxLine.append(carMileage, totalLiters);
+
+            const boxAdditionalInfo = document.createElement("div");
+            boxAdditionalInfo.classList.add("additional-info");
+            const additionalInfoMap = {
                 "ID tankowania:": refuel.refuel_id,
                 "Litry przed tankowaniem:": refuel.liters_before,
                 "Litry po tankowaniu:": refuel.liters_after,
                 "Przebieg przed trasą:": refuel.car_mileage,
                 "Przebieg po trasie:": refuel.car_mileage_after
-            }
-
-            var checkIfCarMileageAfterEqualsZero = true;
-            if (refuel.car_mileage_after != 0) checkIfCarMileageAfterEqualsZero = false;
-
-            const firstBoxLine = document.createElement("div");
-            firstBoxLine.classList.add("first-box-line");
-
-            const registrationNumber = document.createElement("span");
-
-            async function getRegistration() {
-                try {
-                    const carId = refuel.registration_id;
-
-                    const formData = new FormData();
-                    formData.append("car_id", carId);
-
-                    const response = await fetch("php/get-registration.php", {
-                        method: "POST",
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Błąd sieci lub serwera: " + response.status);
-                    }
-
-                    let registration = await response.text();
-
-                    registrationNumber.innerHTML = registration;
-
-                } catch (error) {
-                    console.error("Wystąpił błąd:", error);
-                }
-            }
-
-            // Wywołanie
-            getRegistration();
-            registrationNumber.style.fontWeight = "bold";
-
-            const refuelingDate = document.createElement("span");
-            refuelingDate.innerHTML = formatDateToPolish(refuel.refueling_date) + " " + cutSeconds(refuel.refueling_time);
-
-            firstBoxLine.append(registrationNumber, refuelingDate);
-
-
-            const secondBoxLine = document.createElement("div");
-            secondBoxLine.classList.add("second-box-line");
-
-            const carMileage = document.createElement("span");
-            if (checkIfCarMileageAfterEqualsZero) {
-                carMileage.innerHTML = "Brak trasy";
-            } else {
-                carMileage.innerHTML = (refuel.car_mileage_after - refuel.car_mileage) + " km";
-            }
-
-            const totalLiters = document.createElement("span");
-            totalLiters.innerHTML = "Spalanie nieznane";
-            // totalLiters.innerHTML = refuel.liters_after - refuel.liters_before + " L";
-
-            secondBoxLine.append(carMileage, totalLiters);
-
-            const boxAdditionalInfo = document.createElement("div");
-            boxAdditionalInfo.classList.add("additional-info");
-
-            for (let i = 0; i < Object.keys(additionalInfoMap).length; i++) {
-                let additionalDiv = document.createElement("div");
-                additionalDiv.classList.add("additional-div");
-                let additionalTitle = document.createElement("span");
-                let additionalValue = document.createElement("span");
-                additionalTitle.innerHTML = Object.keys(additionalInfoMap)[i];
-                additionalValue.innerHTML = additionalInfoMap[Object.keys(additionalInfoMap)[i]];
-                additionalDiv.append(additionalTitle, additionalValue);
-                boxAdditionalInfo.append(additionalDiv);
+            };
+            for (let key in additionalInfoMap) {
+                const div = document.createElement("div");
+                div.classList.add("additional-div");
+                const title = document.createElement("span");
+                const value = document.createElement("span");
+                title.innerHTML = key;
+                value.innerHTML = additionalInfoMap[key];
+                div.append(title, value);
+                boxAdditionalInfo.append(div);
             }
 
             if (checkIfCarMileageAfterEqualsZero) {
-                var completeTheMileageDiv = document.createElement("div");
-                completeTheMileageDiv.classList.add("complete-the-mileage");
-
-                var completeTheMileageInput = document.createElement("input");
-                completeTheMileageInput.classList.add("update-car-mileage");
-                completeTheMileageInput.type = "number";
-                var completeTheMileageButton = document.createElement("input");
-                completeTheMileageButton.type = "button";
-                completeTheMileageButton.value = "Uzupełnij przebieg po trasie";
-                completeTheMileageButton.classList.add("primary-btn");
-                completeTheMileageButton.addEventListener("click", function () {
-                    updateCarMileage(refuel.refuel_id, completeTheMileageInput.value)
-                });
-
-                completeTheMileageDiv.append(completeTheMileageInput, completeTheMileageButton);
-
-                boxAdditionalInfo.append(completeTheMileageDiv);
+                const completeDiv = document.createElement("div");
+                completeDiv.classList.add("complete-the-mileage");
+                const input = document.createElement("input");
+                input.type = "number";
+                input.classList.add("update-car-mileage");
+                const button = document.createElement("input");
+                button.type = "button";
+                button.value = "Uzupełnij przebieg po trasie";
+                button.classList.add("primary-btn");
+                button.addEventListener("click", () => updateCarMileage(refuel.refuel_id, input.value));
+                completeDiv.append(input, button);
+                boxAdditionalInfo.append(completeDiv);
             }
 
-            // SPRAWDZANIE CZY JEST JUŻ NASTĘPNE TANKOWANIE DLA DANEGO SAMOCHODU
+            // pobranie spalania
+            const next = await getNextRefuelingReportIfExist(refuel.refuel_id, refuel.registration_id);
+            if (next !== 0 && !checkIfCarMileageAfterEqualsZero) {
+                let fuelConsumption = parseFloat(((next / (refuel.car_mileage_after - refuel.car_mileage)) * 100).toFixed(2));
+                totalLiters.innerHTML = fuelConsumption + "l / 100km";
+                if (fuelConsumption > acceptableFuelConsumption) totalLiters.classList.add("bad-fuel-consumption");
+                else if (fuelConsumption < acceptableFuelConsumption) totalLiters.classList.add("good-fuel-consumption");
+                lineChartData.push([refuel.refueling_date + " " + refuel.refueling_time, fuelConsumption]);
+            }
 
-            // const nextref = await getNextRefuelingReportIfExist(refuel.refuel_id, refuel.registration_id);
-
-            getNextRefuelingReportIfExist(refuel.refuel_id, refuel.registration_id).then(val => {
-                if (val != 0 && !checkIfCarMileageAfterEqualsZero) {
-                    var fuelConsumptionSpan = secondBoxLine.querySelector("span:nth-of-type(2)");
-                    var fuelConsumption = (val / (refuel.car_mileage_after - refuel.car_mileage)) * 100;
-                    fuelConsumption = parseFloat(fuelConsumption.toFixed(2));
-                    fuelConsumptionSpan.innerHTML = fuelConsumption + "l / 100km"
-                    if (fuelConsumption > acceptableFuelConsumption) {
-                        fuelConsumptionSpan.innerHTML = fuelConsumptionSpan.innerHTML + " ▲";
-                        fuelConsumptionSpan.classList.add("bad-fuel-consumption");
-                    } else if (fuelConsumption < acceptableFuelConsumption) {
-                        fuelConsumptionSpan.innerHTML = fuelConsumptionSpan.innerHTML + " ▼";
-                        fuelConsumptionSpan.classList.add("good-fuel-consumption");
-                    }
-                }
-            });
-
+            const div = document.createElement("div");
+            div.className = "box";
             div.append(firstBoxLine, secondBoxLine, boxAdditionalInfo);
-
-            // getNextRefuelingReportIfExist(refuel.refuel_id, refuel.registration_id).then(val => {
-            //     if (val != 0 && !checkIfCarMileageAfterEqualsZero) {
-            //         const thirdLine = document.createElement("div");
-            //         var fuelConsumption = (val/(refuel.car_mileage_after - refuel.car_mileage))*100;
-            //         fuelConsumption = parseFloat(fuelConsumption.toFixed(2));
-            //         thirdLine.innerHTML = "Spalanie: " + fuelConsumption + " L / 100 km";
-            //         thirdLine.classList.add("third-box-line");
-            //         if(fuelConsumption > acceptableFuelConsumption){
-            //             thirdLine.classList.add("bad-fuel-consumption");
-            //         } else{
-            //             thirdLine.classList.add("good-fuel-consumption");
-            //         }
-            //         div.append(firstBoxLine, secondBoxLine, thirdLine, boxAdditionalInfo);
-            //     } else {
-            //         div.append(firstBoxLine, secondBoxLine, boxAdditionalInfo);
-            //     }
-            // });
-
-            // SPRAWDZANIE CZY JEST JUŻ NASTĘPNE TANKOWANIE DLA DANEGO SAMOCHODU
-
             container.appendChild(div);
+
+            return [refuel.refueling_date + " " + refuel.refueling_time, next !== 0 && !checkIfCarMileageAfterEqualsZero ? parseFloat(((next / (refuel.car_mileage_after - refuel.car_mileage)) * 100).toFixed(2)) : null];
         });
 
+        const results = await Promise.all(promises);
+
+        // kliknięcie w box pokazujące additional-info
         document.querySelectorAll('.appContainer .box').forEach(box => {
             box.addEventListener('click', function (e) {
                 if (['INPUT', 'BUTTON', 'TEXTAREA', 'SELECT', 'LABEL'].includes(e.target.tagName)) {
@@ -231,8 +153,11 @@ async function fetchRefuelings() {
             });
         });
 
+        return results.filter(r => r[1] !== null);
 
     } catch (error) {
         console.error('Błąd:', error);
+        return [];
     }
+
 }

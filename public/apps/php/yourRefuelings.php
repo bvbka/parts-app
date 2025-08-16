@@ -34,7 +34,7 @@ if (!$conn) {
     exit;
 }
 
-$sql = "SELECT * FROM refueling WHERE driver_alias = '$alias'";
+$sql = "SELECT * FROM refueling WHERE driver_alias = '$alias' ORDER BY refueling_date DESC, refueling_time DESC";
 
 $result = mysqli_query($conn, $sql);
 

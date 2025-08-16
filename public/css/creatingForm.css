@@ -7,11 +7,18 @@
     flex-direction: column;
 }
 
-.create-form select, .create-form input{
+.create-form select, 
+.create-form input[type="text"],
+.create-form input[type="number"]{
     width: 300px;
     font-size: 20px;
     margin: 5px 0 20px 0;
     height: 45px;
+}
+
+.create-form input[type="text"]:disabled,
+.create-form input[type="number"]:disabled{
+    border-color: #57ee73cd;
 }
 
 .create-form span {
@@ -31,4 +38,14 @@
     display: flex;
     justify-content: space-evenly;
     margin: 5px 0 20px 0;
+}
+
+.liters-before-input, .car-mileage-input{
+    margin-bottom: 0px !important;
+}
+
+.form-manual-instert{
+    width: 300px;
+    margin-bottom: 15px;
+    color: white;
 }

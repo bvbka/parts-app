@@ -30,6 +30,7 @@
     backdrop-filter: blur(15px);
     position: fixed;
     transition: box-shadow 0.2s ease-in-out;
+    z-index: 10000;
 }
 
 .app-title-bar-description {

@@ -4,6 +4,17 @@
     --box-background-color: linear-gradient(to right, #272858, hsl(246, 40%, 35%));
 }
 
+.gradient-text {
+    background: linear-gradient(to right, #d91daf, #f16e60);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
+
+
 body {
     background-color: #47437F;
     margin: 0;
@@ -24,7 +35,7 @@ details summary {
 }
 
 details[open] summary {
-    background: linear-gradient(to right, #d91daf, #f16e60);
+    background: var(--panel-accent-color);
 }
 
 .primary-btn,
@@ -50,7 +61,8 @@ details[open] summary {
     background-color: #d8d8d8;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
     width: 280px;
     height: 40px;
     margin: 10px 0;
@@ -65,10 +77,12 @@ input[type="text"], input[type="number"] {
     transition: all 0.2s ease-in-out;
 }
 
-input[type="text"]:focus, input[type="number"]:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
     border-bottom: 3px solid var(--primary-color);
 }
 
-input[type="text"]::placeholder, input[type="number"]::placeholder {
+input[type="text"]::placeholder,
+input[type="number"]::placeholder {
     color: rgba(255, 255, 255, 0.521);
 }

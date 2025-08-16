@@ -7,6 +7,8 @@
     <script src="../js/check_session.js"></script>
     <script src="../js/popUp.js"></script>
     <script src="../js/fetchRefuelings.js"></script>
+    <script src="../js/generateFuelConsumptionRecords.js"></script>
+    <script src="../js/generateFuelConsumptionChart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <link rel="stylesheet" href="../css/global.css" />
@@ -20,7 +22,6 @@
 
 <body>
     <div class="main-options-panel">
-
         <div class="endpoint-option">
             <div class="app-title-bar">
                 <div class="app-title-bar-description">
@@ -36,13 +37,19 @@
                     </select>
 
                     <span>Litry przed tankowaniem</span>
-                    <input type="number" name="liters_before" class="liters-before-input" required />
+                    <input type="number" name="liters_before" class="liters-before-input" required disabled />
+                    <div class="form-manual-instert">
+                        <input type="checkbox" class="liters-before-manual-checkbox" />Wprowadź ręcznie
+                    </div>
 
                     <span>Litry po tankowaniu</span>
                     <input type="number" name="liters_after" required />
 
-                    <span>Stan licznika</span>
-                    <input type="number" name="car_mileage" class="car-mileage-input" required />
+                    <span>Przebieg</span>
+                    <input type="number" name="car_mileage" class="car-mileage-input" required disabled />
+                    <div class="form-manual-instert">
+                        <input type="checkbox" class="car-mileage-manual-checkbox" />Wprowadź ręcznie
+                    </div>
 
                     <input type="submit" class="primary-btn" value="Wyślij" />
                 </form>
@@ -58,12 +65,21 @@
 
                             const litersSuggestion = await response.text();
                             document.querySelector(".liters-before-input").value = parseFloat(litersSuggestion);
+
+                            const manualLitersInputCheckbox = document.querySelector(".liters-before-manual-checkbox");
+                            const manualLitersInput = document.querySelector(".liters-before-input");
+                            manualLitersInputCheckbox.addEventListener("change", function () {
+                                manualLitersInput.disabled = !manualLitersInputCheckbox.checked;
+                                if (!manualLitersInputCheckbox.checked) manualLitersInput.value = litersSuggestion;
+                                else manualLitersInput.value = "";
+                            });
                         } catch (error) {
                             console.error("Błąd pobierania danych:", error);
                         }
                     }
                     getLitersSuggestion();
 
+                    var mileageSuggestion = "";
                     async function getMileageSuggestion(registation_name) {
                         try {
                             const formData = new FormData();
@@ -75,8 +91,15 @@
                             });
                             if (!response.ok) throw new Error("Błąd sieci");
 
-                            const mileageSuggestion = await response.text();
-                            if (mileageSuggestion != "") {
+                            mileageSuggestion = await response.text();
+                            const manualMileageInputCheckbox = document.querySelector(".car-mileage-manual-checkbox");
+                            const manualMileageInput = document.querySelector(".car-mileage-input");
+                            manualMileageInputCheckbox.addEventListener("change", function () {
+                                manualMileageInput.disabled = !manualMileageInputCheckbox.checked;
+                                if (!manualMileageInputCheckbox.checked && mileageSuggestion != 0) manualMileageInput.value = mileageSuggestion;
+                                else manualMileageInput.value = "";
+                            });
+                            if (mileageSuggestion != 0 && mileageSuggestion != "") {
                                 document.querySelector(".car-mileage-input").value = parseFloat(mileageSuggestion);
                             } else {
                                 document.querySelector(".car-mileage-input").value = "";
@@ -87,7 +110,12 @@
                     }
                     var carSelect = document.getElementById("carSelect");
                     carSelect.addEventListener("change", function () {
-                        getMileageSuggestion(carSelect.value);
+                        if (carSelect.value != "Wybierz pojazd") {
+                            getMileageSuggestion(carSelect.value);
+                        } else {
+                            mileageSuggestion = "";
+                            document.querySelector(".car-mileage-input").value = "";
+                        }
                     });
 
                     async function getCarHistory() {
@@ -132,6 +160,7 @@
 
                     // obsługa wysyłki
                     form.addEventListener("submit", async (e) => {
+                        document.querySelectorAll("input:disabled").forEach(el => el.disabled = false);
                         e.preventDefault();
                         const formData = new FormData(form);
 
@@ -168,23 +197,70 @@
                 </div>
             </div>
             <div class="appContainer">
-                <script>
-                    fetchRefuelings();
-                </script>
             </div>
-
-
         </div>
 
         <div class="endpoint-option">
             <div class="app-title-bar">
                 <div class="app-title-bar-description">
                     <span>Statystyki</span>
-                    <span>Podsumowanie graficzne</span>
+                    <span class="fuel-consumption-norm-span">Norma: </span>
+
+                    <script>
+                        document.querySelector(".fuel-consumption-norm-span").innerHTML += "<b class='gradient-text'>" + acceptableFuelConsumption + "l/100km</b>";
+                    </script>
+                </div>
+                <div class="app-title-bar-button">
+                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
                 </div>
             </div>
-            <div class="stats-container">
-
+            <div class="appContainer">
+                <div class="widget">
+                    <div class="widget-text">Rekordowe wartości</div>
+                </div>
+                <div class="widget quadro-data">
+                    <div class="widget-quadro widget-quadro-top-left">
+                        <span class="gradient-text"></span>
+                        <span>l/100 km</span>
+                        <span>Najniższe</span>
+                    </div>
+                    <div class="widget-quadro widget-quadro-top-right">
+                        <span class="gradient-text"></span>
+                        <span>l/100 km</span>
+                        <span>Najwyższe</span>
+                    </div>
+                    <div class="widget-quadro widget-quadro-bottom-left">
+                        <span class="gradient-text"></span>
+                        <span>l/100 km</span>
+                        <span>Średnie</span>
+                    </div>
+                    <div class="widget-quadro widget-quadro-bottom-right">
+                        <span class="gradient-text"></span>
+                        <span>dni</span>
+                        <span>Passa</span>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-text">Spalanie w liczbach</div>
+                </div>
+                <div class="widget double-data">
+                    <div class="widget-double-first">
+                        <span></span><br>
+                        <span>Tras w normie</span>
+                    </div>
+                    <div class="widget-double-second">
+                        <span></span><br>
+                        <span>Tras poza normą</span>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-text">Wykres spalania</div>
+                </div>
+                <div class="widget widget-line-chart">
+                    <div class="widget-pie-chart-canvas">
+                        <canvas id="consumptionLineChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -274,6 +350,18 @@
             }
         });
 
+    </script>
+
+
+    <script>
+        async function initFuelData() {
+            const fuelData = await fetchRefuelings();
+
+            generateFuelConsumptionChart(fuelData);
+            generateFuelConsumptionRecords(fuelData);
+        }
+
+        initFuelData();
     </script>
 </body>
 

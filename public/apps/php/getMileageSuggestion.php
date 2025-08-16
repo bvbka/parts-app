@@ -36,11 +36,19 @@ if (!$conn) {
 
 $registration_name = $_POST['registration'];
 
-$sql = "SELECT MAX(car_mileage_after) 
+// $sql = "SELECT MAX(car_mileage_after) 
+//         FROM refueling 
+//         JOIN cars 
+//         ON cars.car_id=refueling.registration_id
+//         WHERE registration = '$registration_name' 
+//         AND car_mileage_after <> 0";
+        
+$sql = "SELECT car_mileage_after 
         FROM refueling 
-        JOIN cars 
-        ON cars.car_id=refueling.registration_id
-        WHERE registration = '$registration_name'";
+        JOIN cars ON cars.car_id = refueling.registration_id 
+        WHERE registration = '$registration_name'
+        ORDER BY refuel_id DESC
+        LIMIT 1";
 
 $result = mysqli_query($conn, $sql);
 
