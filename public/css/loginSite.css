@@ -39,11 +39,10 @@
     color: white;
 }
 
-.login-input {
+/* .login-input {
     width: 280px;
     height: 40px;
     margin: 10px 0;
-    /* border: 3px solid rgba(0, 0, 0, 0.199); */
     border: none;
     border-bottom: 3px solid white;
     border-radius: 5px;
@@ -61,7 +60,7 @@
 
 .login-input::placeholder {
     color: rgba(255, 255, 255, 0.521);
-}
+} */
 
 .login-button {
     width: 70%;

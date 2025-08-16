@@ -30,78 +30,78 @@
             </div>
             <div class="appContainer">
                 <form id="refuelForm" class="create-form" method="post">
-                    <span>Zadanie dla</span>
+                    <span>Samochód</span>
                     <select name="registration" id="carSelect" required>
-                        <option>Ładowanie...</option>
+                        <option>Wybierz pojazd</option>
                     </select>
 
                     <span>Litry przed tankowaniem</span>
-                    <input type="text" name="liters_before" class="decimal-only" inputmode="decimal" required />
+                    <input type="number" name="liters_before" class="liters-before-input" required />
 
                     <span>Litry po tankowaniu</span>
-                    <input type="text" name="liters_after" class="decimal-only" inputmode="decimal" required />
+                    <input type="number" name="liters_after" required />
 
                     <span>Stan licznika</span>
-                    <input type="text" name="car_mileage" class="int-only" inputmode="numeric" required />
+                    <input type="number" name="car_mileage" class="car-mileage-input" required />
 
                     <input type="submit" class="primary-btn" value="Wyślij" />
                 </form>
 
                 <script>
-                    (function () {
-                        const form = document.getElementById('refuelForm');
-                        const DECIMAL_RE = /^\d*([.,]\d*)?$/;
-                        const INTEGER_RE = /^\d*$/;
-
-                        function attachGuards(el, regex, pasteCleaner) {
-                            el.addEventListener('beforeinput', function (e) {
-                                if (e.inputType !== 'insertText') return;
-                                const ch = e.data || '';
-                                const s = el.selectionStart, t = el.selectionEnd;
-                                const next = el.value.slice(0, s) + ch + el.value.slice(t);
-                                if (!regex.test(next)) e.preventDefault();
-                            });
-                            el.addEventListener('paste', function (e) {
-                                e.preventDefault();
-                                const raw = (e.clipboardData || window.clipboardData).getData('text') || '';
-                                const clean = pasteCleaner(raw);
-                                const s = el.selectionStart, t = el.selectionEnd;
-                                el.setRangeText(clean, s, t, 'end');
-                            });
-                        }
-
-                        function cleanDecimalPaste(text) {
-                            let v = text.replace(/[^0-9.,]/g, '');
-                            const i = v.search(/[.,]/);
-                            if (i !== -1) {
-                                const sep = v[i];
-                                const before = v.slice(0, i);
-                                const after = v.slice(i + 1).replace(/[.,]/g, '');
-                                v = before + sep + after;
-                            }
-                            return v;
-                        }
-
-                        function cleanIntPaste(text) {
-                            return text.replace(/\D/g, '');
-                        }
-
-                        document.querySelectorAll('.decimal-only').forEach(function (el) {
-                            attachGuards(el, DECIMAL_RE, cleanDecimalPaste);
-                        });
-
-                        document.querySelectorAll('.int-only').forEach(function (el) {
-                            attachGuards(el, INTEGER_RE, cleanIntPaste);
-                        });
-
-                        form.addEventListener('submit', function () {
-                            form.querySelectorAll('.decimal-only').forEach(function (el) {
-                                el.value = (el.value || '').replace(',', '.');
-                            });
-                        });
-                    })();
 
                     const select = document.getElementById("carSelect");
+
+                    async function getLitersSuggestion() {
+                        try {
+                            const response = await fetch("php/getLitersSuggestion.php");
+                            if (!response.ok) throw new Error("Błąd sieci");
+
+                            const litersSuggestion = await response.text();
+                            document.querySelector(".liters-before-input").value = parseFloat(litersSuggestion);
+                        } catch (error) {
+                            console.error("Błąd pobierania danych:", error);
+                        }
+                    }
+                    getLitersSuggestion();
+
+                    async function getMileageSuggestion(registation_name) {
+                        try {
+                            const formData = new FormData();
+                            formData.append("registration", registation_name);
+
+                            const response = await fetch("php/getMileageSuggestion.php", {
+                                method: "POST",
+                                body: formData
+                            });
+                            if (!response.ok) throw new Error("Błąd sieci");
+
+                            const mileageSuggestion = await response.text();
+                            if (mileageSuggestion != "") {
+                                document.querySelector(".car-mileage-input").value = parseFloat(mileageSuggestion);
+                            } else {
+                                document.querySelector(".car-mileage-input").value = "";
+                            }
+                        } catch (error) {
+                            console.error("Błąd pobierania danych:", error);
+                        }
+                    }
+                    var carSelect = document.getElementById("carSelect");
+                    carSelect.addEventListener("change", function () {
+                        getMileageSuggestion(carSelect.value);
+                    });
+
+                    async function getCarHistory() {
+                        try {
+                            const response = await fetch("php/getCarHistory.php");
+                            if (!response.ok) throw new Error("Błąd sieci");
+
+                            const history = await response.json();
+                        } catch (error) {
+                            console.error("Błąd pobierania danych:", error);
+                        }
+                    }
+                    getCarHistory();
+
 
                     async function getCars() {
                         try {
@@ -109,7 +109,7 @@
                             if (!response.ok) throw new Error("Błąd sieci");
 
                             const cars = await response.json();
-                            select.innerHTML = "";
+                            // select.innerHTML = "";
 
                             if (cars.length === 0) {
                                 select.innerHTML = "<option>Brak samochodów</option>";
@@ -129,7 +129,6 @@
                     getCars();
 
                     const form = document.getElementById("refuelForm");
-                    console.log(form);
 
                     // obsługa wysyłki
                     form.addEventListener("submit", async (e) => {
@@ -146,6 +145,7 @@
                             if (result.trim() === "OK") {
                                 alert("Zarejestrowano tankowanie!");
                                 form.reset();
+                                fetchRefuelings();
                             } else {
                                 alert("Błąd: " + result);
                             }
@@ -164,7 +164,7 @@
                     <span>Lista Twoich tankowań</span>
                 </div>
                 <div class="app-title-bar-button">
-                    
+
                 </div>
             </div>
             <div class="appContainer">

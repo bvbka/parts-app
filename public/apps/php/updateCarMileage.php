@@ -34,16 +34,16 @@ if (!$conn) {
     exit;
 }
 
-$sql = "SELECT * FROM refueling WHERE driver_alias = '$alias'";
+$refuel_id = $_POST['refuel_id'];
+$new_mileage = $_POST['new_mileage'];
 
-$result = mysqli_query($conn, $sql);
-
-$tasks = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $tasks[] = $row;
+// $sql = "UPDATE tasks SET status = '$newStatus' WHERE task_id = $taskId";
+$sql = "UPDATE refueling SET car_mileage_after = $new_mileage WHERE refuel_id = $refuel_id";
+if (mysqli_query($conn, $sql)) {
+    echo "OK";
+} else {
+    echo "ERROR";
 }
-
-echo json_encode($tasks);
 
 $conn->close();
 

@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-header('Content-Type: application/json');
+header('Content-Type: application/text; charset=UTF-8');
 
 if (!isset($_SESSION['user'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Nie jesteś zalogowany']);
+    http_response_code(401);
+    echo json_encode(['error' => 'Nie jesteś zalogowany'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -30,20 +30,18 @@ if ($isProd) {
 $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) {
     http_response_code(500);
-    echo json_encode(['error' => 'Błąd połączenia z bazą']);
+    echo json_encode(['error' => 'Błąd połączenia z bazą'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$sql = "SELECT * FROM refueling WHERE driver_alias = '$alias'";
+// Tu wybieramy konkretne kolumny w takiej kolejności,
+// żeby od razu utworzyć tablicę 2D (bez kluczy asocjacyjnych)
+$sql = "SELECT MAX(liters_after) FROM refueling";
 
 $result = mysqli_query($conn, $sql);
 
-$tasks = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $tasks[] = $row;
-}
+$row = mysqli_fetch_row($result);
 
-echo json_encode($tasks);
+echo $row[0];
 
 $conn->close();
-

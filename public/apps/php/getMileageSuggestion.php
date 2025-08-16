@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-header('Content-Type: application/json');
+header('Content-Type: application/text; charset=UTF-8');
 
 if (!isset($_SESSION['user'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Nie jesteś zalogowany']);
+    http_response_code(401);
+    echo json_encode(['error' => 'Nie jesteś zalogowany'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -30,20 +30,22 @@ if ($isProd) {
 $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) {
     http_response_code(500);
-    echo json_encode(['error' => 'Błąd połączenia z bazą']);
+    echo json_encode(['error' => 'Błąd połączenia z bazą'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$sql = "SELECT * FROM refueling WHERE driver_alias = '$alias'";
+$registration_name = $_POST['registration'];
+
+$sql = "SELECT MAX(car_mileage_after) 
+        FROM refueling 
+        JOIN cars 
+        ON cars.car_id=refueling.registration_id
+        WHERE registration = '$registration_name'";
 
 $result = mysqli_query($conn, $sql);
 
-$tasks = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $tasks[] = $row;
-}
+$row = mysqli_fetch_row($result);
 
-echo json_encode($tasks);
+echo $row[0];
 
 $conn->close();
-
