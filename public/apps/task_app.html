@@ -4,20 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    
     <script src="../js/check_session.js"></script>
-    <script src="../js/fetchTasks2.js"></script>
-    <script src="../js/statusMaps.js"></script>
     <script src="../js/popUp.js"></script>
-    <script src="../js/generateTasksStatusesPieChart.js"></script>
-    <script src="../js/countOpenClosedTasks.js"></script>
+
+    <script src="../js/tasks/fetchTasks2.js"></script>
+    <script src="../js/tasks/statusMaps.js"></script>
+    <script src="../js/tasks/generateTasksStatusesPieChart.js"></script>
+    <script src="../js/tasks/countOpenClosedTasks.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
     <link rel="stylesheet" href="../css/global.css" />
     <link rel="stylesheet" href="../css/statsWidgets.css" />
     <link rel="stylesheet" href="../css/creatingForm.css" />
     <link rel="stylesheet" href="../css/bottomNavBar.css" />
     <link rel="stylesheet" href="../css/appTitleBar.css" />
     <link rel="stylesheet" href="../css/appBoxList.css" />
+    
     <title>DEV TEST</title>
 </head>
 
@@ -322,7 +327,7 @@
             const form = document.getElementById("taskForm");
 
             try {
-                const response = await fetch("php/get-users.php");
+                const response = await fetch("php/tasks/get-users.php");
                 if (!response.ok) throw new Error("Błąd sieci");
 
                 const users = await response.json();
@@ -350,7 +355,7 @@
                 const formData = new FormData(form);
 
                 try {
-                    const response = await fetch("php/createTask.php", {
+                    const response = await fetch("php/tasks/createTask.php", {
                         method: "POST",
                         body: formData
                     });

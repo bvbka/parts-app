@@ -130,3 +130,9 @@
     font-size: 16px;
     font-weight: bold;
 }
+
+.widget-select{
+    width: 100%;
+    height: 45px;
+    font-size: 20px;
+}

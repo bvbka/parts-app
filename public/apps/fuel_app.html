@@ -6,17 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <script src="../js/check_session.js"></script>
     <script src="../js/popUp.js"></script>
-    <script src="../js/fetchRefuelings.js"></script>
-    <script src="../js/generateFuelConsumptionRecords.js"></script>
-    <script src="../js/generateFuelConsumptionChart.js"></script>
+
+    <script src="../js/fuel/fetchRefuelings.js"></script>
+    <script src="../js/fuel/generateFuelConsumptionRecords.js"></script>
+    <script src="../js/fuel/generateFuelConsumptionChart.js"></script>
+    <script src="../js/fuel/fetchDriverRefuelings.js"></script>
+    <script src="../js/fuel/generateDriverFuelConsumptionChart.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
     <link rel="stylesheet" href="../css/global.css" />
     <link rel="stylesheet" href="../css/statsWidgets.css" />
     <link rel="stylesheet" href="../css/creatingForm.css" />
     <link rel="stylesheet" href="../css/bottomNavBar.css" />
     <link rel="stylesheet" href="../css/appTitleBar.css" />
     <link rel="stylesheet" href="../css/appBoxList.css" />
+    
     <title>DEV TEST</title>
 </head>
 
@@ -60,7 +66,7 @@
 
                     async function getLitersSuggestion() {
                         try {
-                            const response = await fetch("php/getLitersSuggestion.php");
+                            const response = await fetch("php/fuel/getLitersSuggestion.php");
                             if (!response.ok) throw new Error("Błąd sieci");
 
                             const litersSuggestion = await response.text();
@@ -85,7 +91,7 @@
                             const formData = new FormData();
                             formData.append("registration", registation_name);
 
-                            const response = await fetch("php/getMileageSuggestion.php", {
+                            const response = await fetch("php/fuel/getMileageSuggestion.php", {
                                 method: "POST",
                                 body: formData
                             });
@@ -120,7 +126,7 @@
 
                     async function getCarHistory() {
                         try {
-                            const response = await fetch("php/getCarHistory.php");
+                            const response = await fetch("php/fuel/getCarHistory.php");
                             if (!response.ok) throw new Error("Błąd sieci");
 
                             const history = await response.json();
@@ -133,7 +139,7 @@
 
                     async function getCars() {
                         try {
-                            const response = await fetch("php/get-cars.php");
+                            const response = await fetch("php/fuel/get-cars.php");
                             if (!response.ok) throw new Error("Błąd sieci");
 
                             const cars = await response.json();
@@ -165,7 +171,7 @@
                         const formData = new FormData(form);
 
                         try {
-                            const response = await fetch("php/createRefuel.php", {
+                            const response = await fetch("php/fuel/createRefuel.php", {
                                 method: "POST",
                                 body: formData
                             });
@@ -266,8 +272,73 @@
 
 
         <div class="endpoint-option">
-            W BUDOWIE
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
+                    <span>Kierowcy</span>
+                    <span class="fuel-consumption-norm-span">Norma: </span>
+
+                    <script>
+                        document.querySelectorAll(".fuel-consumption-norm-span")[1].innerHTML += "<b class='gradient-text'>" + acceptableFuelConsumption + "l/100km</b>";
+                    </script>
+                </div>
+                <div class="app-title-bar-button">
+                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                </div>
+            </div>
+            <div class="appContainer">
+                <div class="widget">
+                    <div class="widget-text">Statystyki kierowcy</div>
+                </div>
+                <div class="widget select-widget">
+                    <select class="widget-select driver-select">
+                        <option value="default">Wybierz kierowcę</option>
+                    </select>
+                </div>
+                <div class="widget widget-line-chart">
+                    <div class="widget-pie-chart-canvas">
+                        <canvas id="driverConsumptionLineChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script>
+            var driverListSelect = document.querySelector(".driver-select");
+            async function getDriverList() {
+                try {
+                    const response = await fetch("php/fuel/getDriverList.php");
+                    if (!response.ok) throw new Error("Błąd sieci");
+
+                    const users = await response.json();
+
+                    if (users.length === 0) {
+                        driverListSelect.innerHTML = "<option>Brak samochodów</option>";
+                    } else {
+                        users.forEach(user => {
+                            const option = document.createElement("option");
+                            option.value = user.alias;
+                            option.textContent = user.name;
+                            driverListSelect.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    driverListSelect.innerHTML = "<option>Błąd ładowania danych</option>";
+                    console.error("Błąd pobierania danych:", error);
+                }
+            }
+            getDriverList();
+
+            driverListSelect.addEventListener("change", function () {
+                if (driverListSelect.value != "default") {
+                    console.log(driverListSelect.value);
+                    async function generateDriverChart() {
+                        const fuelData2 = await fetchDriverRefuelings(driverListSelect.value);
+                        generateDriverFuelConsumptionChart(fuelData2);
+                    }
+                    generateDriverChart()
+                }
+            });
+        </script>
 
         <div class="navigation-bar">
             <div class="selected-option-panel">
@@ -275,16 +346,16 @@
             </div>
             <div class="options-panel">
                 <div class="panel-option">
-                    X
+                    ➕
                 </div>
                 <div class="panel-option">
-                    X
+                    📅
                 </div>
                 <div class="panel-option">
-                    X
+                    🚀
                 </div>
                 <div class="panel-option">
-                    X
+                    🚛
                 </div>
             </div>
         </div>
@@ -356,9 +427,10 @@
     <script>
         async function initFuelData() {
             const fuelData = await fetchRefuelings();
-
             generateFuelConsumptionChart(fuelData);
             generateFuelConsumptionRecords(fuelData);
+            // const fuelData2 = await fetchDriverRefuelings();
+            // console.log("fuelData2:",fuelData2);
         }
 
         initFuelData();

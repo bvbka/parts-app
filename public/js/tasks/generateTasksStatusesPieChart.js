@@ -2,7 +2,7 @@ let  statusCountMap = {};
 
 async function generateTasksStatusesPieChart() {
     try {
-        const response = await fetch("../apps/php/pie_chart_data.php");
+        const response = await fetch("../apps/php/tasks/pie_chart_data.php");
         if (!response.ok) throw new Error("Błąd sieci");
 
         const data = await response.json();

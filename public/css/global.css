@@ -62,7 +62,8 @@ details[open] summary {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="password"] {
     width: 280px;
     height: 40px;
     margin: 10px 0;

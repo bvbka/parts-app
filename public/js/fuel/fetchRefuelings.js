@@ -4,7 +4,7 @@ const acceptableFuelConsumption = 11.5;
 async function fetchRefuelings() {
     lineChartData = []; // <--- tu
     try {
-        const response = await fetch('php/yourRefuelings.php');
+        const response = await fetch('php/fuel/yourRefuelings.php');
         if (!response.ok) {
             if (response.status === 401) {
                 window.location.href = 'index.html';
@@ -19,7 +19,7 @@ async function fetchRefuelings() {
 
         async function updateCarMileage(refuelId, newMileage) {
             try {
-                const res = await fetch('php/updateCarMileage.php', {
+                const res = await fetch('php/fuel/updateCarMileage.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ refuel_id: refuelId, new_mileage: newMileage })
@@ -39,7 +39,7 @@ async function fetchRefuelings() {
         }
 
         async function getNextRefuelingReportIfExist(refuelId, carRegistrationId) {
-            const res = await fetch('php/checkNextRefueling.php', {
+            const res = await fetch('php/fuel/checkNextRefueling.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ refuel_id: refuelId, registration_id: carRegistrationId })
@@ -67,7 +67,7 @@ async function fetchRefuelings() {
             try {
                 const formData = new FormData();
                 formData.append("car_id", refuel.registration_id);
-                const regRes = await fetch("php/get-registration.php", { method: "POST", body: formData });
+                const regRes = await fetch("php/fuel/get-registration.php", { method: "POST", body: formData });
                 if (regRes.ok) registrationSpan.innerHTML = await regRes.text();
             } catch (e) { console.error(e); }
 
