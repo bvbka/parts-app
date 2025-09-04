@@ -1,6 +1,8 @@
 <?php
 session_start(); // <--- dodaj na początku
 
+header('Content-Type: application/json');
+
 ini_set('display_errors', 0);         // wyłącza pokazywanie błędów na ekranie
 error_reporting(0);                   // wyłącza raportowanie błędów
 
@@ -33,6 +35,8 @@ if (!$alias || !$password) {
     exit;
 }
 
+$role = 0;
+
 $sql = "SELECT * FROM users WHERE alias='$alias' AND password='$password'";
 $result = mysqli_query($conn, $sql);
 
@@ -47,13 +51,29 @@ if (!$result) {
 
 if (mysqli_num_rows($result) === 1) {
     $_SESSION['user'] = $alias; // <-- zapisz użytkownika
+
+    $sql = "SELECT role_name 
+        FROM users 
+        JOIN roles 
+        ON roles.role_id=users.role
+        WHERE alias = '$alias'";
+
+    $result3 = mysqli_query($conn, $sql);
+
+    $row = mysqli_fetch_assoc($result3);
+
+    $role = $row['role_name'];
     
     $row = mysqli_fetch_assoc($result2);
     $_SESSION['user_id'] = $row['id']; // zapis ID użytkownika do sesji
 
-    echo "OK";
+    echo json_encode([
+        'response' => "OK",
+        'alias' => $alias,
+        'role' => $role
+    ]);
 } else {
-    echo "Błąd";
+    echo json_encode("Błąd");
 }
 
 mysqli_close($conn);

@@ -63,7 +63,8 @@ details[open] summary {
 
 input[type="text"],
 input[type="number"],
-input[type="password"] {
+input[type="password"],
+select {
     width: 280px;
     height: 40px;
     margin: 10px 0;
@@ -76,6 +77,10 @@ input[type="password"] {
     background-color: rgba(19, 19, 19, 0.3);
     color: white;
     transition: all 0.2s ease-in-out;
+}
+option{
+    background-color: white;
+    color: black;
 }
 
 input[type="text"]:focus,

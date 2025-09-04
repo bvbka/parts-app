@@ -52,14 +52,19 @@
                 body: formData
             });
 
-            const result = await response.text();
-            //messageDiv.innerHTML = result;
-            if (result.trim() === "OK") {
-                // alert("Zalogowano!");
+            // odczyt JSONa
+            const result = await response.json();
+
+            // sprawdzenie wartości pola 'response'
+            if (result.response === "OK") {
+                localStorage.setItem('alias',result.alias);
+                localStorage.setItem('role',result.role);
                 window.location.href = "applist.html"; // przekierowanie
             } else {
-                // alert("Błędne dane.");
+                console.log("Błędne dane.");
+                // tutaj możesz np. pokazać komunikat użytkownikowi
             }
+
 
         });
     </script>

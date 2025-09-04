@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="../css/bottomNavBar.css" />
     <link rel="stylesheet" href="../css/appTitleBar.css" />
     <link rel="stylesheet" href="../css/appBoxList.css" />
-    
+
     <title>DEV TEST</title>
 </head>
 
@@ -281,9 +281,9 @@
                         document.querySelectorAll(".fuel-consumption-norm-span")[1].innerHTML += "<b class='gradient-text'>" + acceptableFuelConsumption + "l/100km</b>";
                     </script>
                 </div>
-                <div class="app-title-bar-button">
-                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
-                </div>
+                <!-- <div class="app-title-bar-button"> -->
+                <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                <!-- </div> -->
             </div>
             <div class="appContainer">
                 <div class="widget">
@@ -354,7 +354,7 @@
                 <div class="panel-option">
                     🚀
                 </div>
-                <div class="panel-option">
+                <div class="panel-option admin">
                     🚛
                 </div>
             </div>
@@ -363,9 +363,18 @@
 
     <script>
         var optionMarker = document.querySelector(".selected-option");
-        var options = document.querySelectorAll(".panel-option");
         var optionsPanel = document.querySelector(".options-panel");
         var endPoints = document.querySelectorAll(".endpoint-option");
+
+        if (localStorage.getItem('role') == 'admin') {
+            var options = document.querySelectorAll(".panel-option");
+        } else {
+            var options = document.querySelectorAll(".panel-option:not(.admin)");
+            var adminOptions = document.querySelectorAll(".admin");
+            adminOptions.forEach(adminOption => {
+                adminOption.style.display = "none";
+            });
+        }
 
         endPoints.forEach(end => {
             end.style.display = "none";
@@ -425,6 +434,7 @@
 
 
     <script>
+
         async function initFuelData() {
             const fuelData = await fetchRefuelings();
             generateFuelConsumptionChart(fuelData);
