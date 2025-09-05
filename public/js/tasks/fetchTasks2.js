@@ -258,7 +258,7 @@ async function fetchTasks2(siteType, containerType) {
         document.querySelectorAll('.appContainer-' + containerType + ' .box').forEach(task => {
             task.addEventListener('click', function () {
                 let buttonDiv = task.lastChild;
-                if (buttonDiv.classList.contains("task-buttons")) {
+                if (buttonDiv.classList.contains("box-buttons")) {
                     buttonDiv.style.display = (buttonDiv.style.display === "flex") ? "none" : "flex";
                 }
                 let additionalInfo = task.querySelector(".additional-info");
