@@ -1,4 +1,8 @@
 async function generateFuelConsumptionRecords(fuelData) {
+    
+    if(fuelData == 0){
+        return;
+    }
 
     var quadroRecords = document.querySelectorAll(".widget-quadro span:nth-child(1)");
 

@@ -36,7 +36,7 @@ if (!$conn) {
 
 $sql = "SELECT *
         FROM tasks
-        JOIN users ON assignee_alias = alias
+        JOIN users ON reporter_alias = alias
         WHERE assignee_alias = '$alias'
         ORDER BY 
             priority DESC,

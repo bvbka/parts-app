@@ -1,5 +1,9 @@
 async function generateFuelConsumptionChart(fuelData) {
 
+    if (fuelData == 0) {
+        return;
+    }
+
     var first = document.querySelector(".widget-double-first span");
     var second = document.querySelector(".widget-double-second span");
 

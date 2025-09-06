@@ -85,11 +85,29 @@ async function fetchTasks2(siteType, containerType) {
                 deadline = formatDateToPolish(task.deadline_date) + ", " + cutSeconds(task.deadline_time);
             } else deadline = "Brak terminu";
 
-            var additionalInfoMap = {
-                "ID zadania:": task.task_id,
-                "Data utworzenia:": formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time),
-                "Termin:": deadline,
+            if (siteType == "checkYourTasks") {
+                var additionalInfoMap = {
+                    "ID zadania:": task.task_id,
+                    "Data utworzenia:": formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time),
+                    "Termin:": deadline,
+                    "Zleceniodawca": assignee
+                }
+            } else if (siteType == "checkCreatedTasks") { // OK
+                var additionalInfoMap = {
+                    "ID zadania:": task.task_id,
+                    "Data utworzenia:": formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time),
+                    "Termin:": deadline,
+                    "Zleceniobiorca": assignee
+                }
             }
+
+            // var additionalInfoMap = {
+            //     "ID zadania:": task.task_id,
+            //     "Data utworzenia:": formatDateToPolish(task.creation_date) + ", " + cutSeconds(task.creation_time),
+            //     "Termin:": deadline,
+            //     "Osoba zlecająca": task.reporter_alias,
+            //     "Osoba przypisana": assignee
+            // }
 
             const firstTaskLine = document.createElement("div");
             firstTaskLine.classList.add("first-box-line");
@@ -137,7 +155,7 @@ async function fetchTasks2(siteType, containerType) {
                 priorityLine.classList.add("priority-line");
                 priorityLine.innerHTML = "PRIORYTET";
                 firstTaskLine.style.marginTop = "16px";
-                div.append(priorityLine,firstTaskLine, secondTaskLine, taskAdditionalInfo);
+                div.append(priorityLine, firstTaskLine, secondTaskLine, taskAdditionalInfo);
             } else {
                 div.append(firstTaskLine, secondTaskLine, taskAdditionalInfo);
             }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    
+
     <script src="../js/check_session.js"></script>
     <script src="../js/popUp.js"></script>
     <script src="../js/appBars.js"></script>
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../css/bottomNavBar.css" />
     <link rel="stylesheet" href="../css/appTitleBar.css" />
     <link rel="stylesheet" href="../css/appBoxList.css" />
-    
+
     <title>DEV TEST</title>
 </head>
 
@@ -263,16 +263,21 @@
                     </select>
                     <span>Opis zadania</span>
                     <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
-                    <span>Deadline</span>
+                    <span>Termin</span>
                     <div class="box-deadlines">
                         <input type="date" name="deadline_date" />
                         <input type="time" name="deadline_time" />
                     </div>
+                    <span>Ważność</span>
+                    <div class="box-priority">
+                        <input type="checkbox" name="priority" value="1"/>
+                        PRIORYTET
+                    </div> 
                     <input type="submit" class="primary-btn" value="Wyślij" />
                 </form>
             `;
 
-            showPopUp("info", "Popup", kod);
+            showPopUp("info", "Utwórz zadanie", kod);
 
             // teraz pobierz dane do selecta
             const select = document.getElementById("userSelect");

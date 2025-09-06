@@ -35,6 +35,7 @@ $name_and_surname = $_POST["name_and_surname"] ?? '';
 $task_content = $_POST["task_content"] ?? '';
 $task_deadline_date = $_POST["deadline_date"] ?? '';
 $task_deadline_time = $_POST["deadline_time"] ?? '';
+$task_priority = $_POST["priority"] ?? '0';
 
 if (!$name_and_surname || !$task_content) {
     http_response_code(400);
@@ -52,8 +53,8 @@ $assignee = $row['alias'];
 
 //	task_id	reporter_alias	assignee_alias	summary	
 
-$sql = "INSERT INTO tasks (task_id, reporter_alias, assignee_alias, summary, status, creation_date, creation_time, deadline_date, deadline_time) 
-        VALUES ($next_id, '$alias', '$assignee', '$task_content', 'new', CURDATE(), DATE_FORMAT(NOW(), '%H:%i:%s'), '$task_deadline_date', '$task_deadline_time')";
+$sql = "INSERT INTO tasks (task_id, reporter_alias, assignee_alias, summary, status, creation_date, creation_time, deadline_date, deadline_time, priority) 
+        VALUES ($next_id, '$alias', '$assignee', '$task_content', 'new', CURDATE(), DATE_FORMAT(NOW(), '%H:%i:%s'), '$task_deadline_date', '$task_deadline_time', $task_priority)";
 
 
 if (mysqli_query($conn, $sql)) {

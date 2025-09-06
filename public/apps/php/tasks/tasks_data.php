@@ -39,7 +39,7 @@ $sql = "SELECT *
         JOIN users ON assignee_alias = alias
         WHERE reporter_alias = '$alias'
         ORDER BY 
-            priority DESC,
+            -- priority DESC,
             FIELD(status, 'new', 'accepted', 'verify', 'rejected', 'done'),
             creation_date DESC,
             creation_time DESC";
