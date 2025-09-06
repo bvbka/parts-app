@@ -34,11 +34,12 @@ if (!$conn) {
     exit;
 }
 
-$sql = "SELECT task_id, summary, status, name, surname, creation_date, creation_time, deadline_date, deadline_time
+$sql = "SELECT *
         FROM tasks
         JOIN users ON assignee_alias = alias
         WHERE reporter_alias = '$alias'
         ORDER BY 
+            priority DESC,
             FIELD(status, 'new', 'accepted', 'verify', 'rejected', 'done'),
             creation_date DESC,
             creation_time DESC";

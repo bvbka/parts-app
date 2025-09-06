@@ -132,7 +132,15 @@ async function fetchTasks2(siteType, containerType) {
                 taskAdditionalInfo.append(additionalDiv);
             }
 
-            div.append(firstTaskLine, secondTaskLine, taskAdditionalInfo);
+            if (task.priority == 1) {
+                const priorityLine = document.createElement("div");
+                priorityLine.classList.add("priority-line");
+                priorityLine.innerHTML = "PRIORYTET";
+                firstTaskLine.style.marginTop = "16px";
+                div.append(priorityLine,firstTaskLine, secondTaskLine, taskAdditionalInfo);
+            } else {
+                div.append(firstTaskLine, secondTaskLine, taskAdditionalInfo);
+            }
 
             // Przyciski akcji
             if ((task.status == "new" && siteType == "checkYourTasks") || (task.status == "accepted" && siteType == "checkYourTasks") || (task.status == "verify" && siteType == "checkCreatedTasks")) {
