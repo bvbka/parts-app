@@ -124,64 +124,12 @@ async function fetchLeaves() {
 
             leaveDatesDiv.append(leaveStartDateSpan, leaveEndDateSpan);
 
-
             secondBoxLine.append(leaveRemainingTimeBar, leaveDatesDiv);
-
-
-            // const boxAdditionalInfo = document.createElement("div");
-            // boxAdditionalInfo.classList.add("additional-info");
-            // const additionalInfoMap = {
-            //     "ID tankowania:": refuel.refuel_id,
-            //     "Litry przed tankowaniem:": refuel.liters_before,
-            //     "Litry po tankowaniu:": refuel.liters_after,
-            //     "Przebieg przed trasą:": refuel.car_mileage,
-            //     "Przebieg po trasie:": refuel.car_mileage_after
-            // };
-            // for (let key in additionalInfoMap) {
-            //     const div = document.createElement("div");
-            //     div.classList.add("additional-div");
-            //     const title = document.createElement("span");
-            //     const value = document.createElement("span");
-            //     title.innerHTML = key;
-            //     value.innerHTML = additionalInfoMap[key];
-            //     div.append(title, value);
-            //     boxAdditionalInfo.append(div);
-            // }
-
-            // if (checkIfCarMileageAfterEqualsZero) {
-            //     const completeDiv = document.createElement("div");
-            //     completeDiv.classList.add("complete-the-mileage");
-            //     const input = document.createElement("input");
-            //     input.type = "number";
-            //     input.classList.add("update-car-mileage");
-            //     const button = document.createElement("input");
-            //     button.type = "button";
-            //     button.value = "Uzupełnij przebieg po trasie";
-            //     button.classList.add("primary-btn");
-            //     button.addEventListener("click", () => updateCarMileage(refuel.refuel_id, input.value));
-            //     completeDiv.append(input, button);
-            //     boxAdditionalInfo.append(completeDiv);
-            // }
 
             const div = document.createElement("div");
             div.className = "box";
             div.append(firstBoxLine, secondBoxLine);
-            // div.append(firstBoxLine, secondBoxLine, boxAdditionalInfo);
             container.appendChild(div);
-
-            // return [refuel.refueling_date + " " + refuel.refueling_time, next !== 0 && !checkIfCarMileageAfterEqualsZero ? parseFloat(((next / (refuel.car_mileage_after - refuel.car_mileage)) * 100).toFixed(2)) : null];
-        });
-
-        // kliknięcie w box pokazujące additional-info
-        document.querySelectorAll('.appContainer .box').forEach(box => {
-            box.addEventListener('click', function (e) {
-                if (['INPUT', 'BUTTON', 'TEXTAREA', 'SELECT', 'LABEL'].includes(e.target.tagName)) {
-                    e.stopPropagation();
-                    return;
-                }
-                let additionalInfo = box.querySelector(".additional-info");
-                additionalInfo.style.display = (additionalInfo.style.display === "flex") ? "none" : "flex";
-            });
         });
 
     } catch (error) {
