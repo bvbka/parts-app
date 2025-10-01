@@ -1,6 +1,6 @@
 {
-  "name": "Task organiser",
-  "short_name": "Tasks",
+  "name": "Work app",
+  "short_name": "Work",
   "start_url": "/public/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
