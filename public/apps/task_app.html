@@ -40,6 +40,80 @@
     <div class="main-options-panel">
 
         <div class="endpoint-option">
+            <div class="app-title-bar">
+                <div class="app-title-bar-description">
+                    <span>Utwórz</span>
+                    <span>Zleć zadanie do wykonania</span>
+                </div>
+                <div class="app-title-bar-button">
+                    <!-- <button class="createTaskButton"><img src="img/plus.png" /></button> -->
+                </div>
+            </div>
+            <form id="taskForm" class="create-form" method="post">
+                <div class="widget">
+                    <div class="widget-text">
+                        <span>Zadanie dla</span>
+                        <select name="name_and_surname" id="userSelect" required>
+                            <option>Ładowanie...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-text">
+                        <span>Opis zadania</span>
+                        <div class="taskContentType">
+                            <label>
+                                <input type="radio" name="inputType" value="text">
+                                Tekst
+                            </label>
+                            <label>
+                                <input type="radio" name="inputType" value="audio" checked>
+                                Audio
+                            </label>
+                        </div>
+
+                        <div id="textInput" style="display:none;">
+                            <textarea name="task_content" placeholder="Wpisz treść zadania..."></textarea>
+                        </div>
+
+                        <div id="audioInput" style="display:flex;">
+                            <button id="recordBtn" type="button" class="mediaRecorderUnactive">▶</button>
+                            <audio id="audioPreview" style="height: 35px !important;" controls></audio>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-text">
+                        <span>Termin</span>
+                        <div class="box-deadlines">
+                            <input type="date" name="deadline_date" />
+                            <input type="time" name="deadline_time" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-text">
+                        <span>Ważność</span>
+                        <div class="box-priority">
+                            <input type="checkbox" name="priority" value="1" />
+                            Zadanie priorytetowe
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-text">
+                        <input type="submit" class="primary-btn" value="Zleć zadanie" />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="endpoint-option">
             <div class="app-title-bar-delegated app-title-bar">
                 <div class="app-title-bar-description">
                     <span>Zlecone</span>
@@ -136,6 +210,9 @@
             </div>
             <div class="options-panel">
                 <div class="panel-option">
+                    ➕
+                </div>
+                <div class="panel-option">
                     📤
                 </div>
                 <div class="panel-option">
@@ -155,33 +232,55 @@
     </div>
 
     <script>
+        document.querySelectorAll('input[name="inputType"]').forEach(radio => {
+            radio.addEventListener('change', e => {
+                document.getElementById('textInput').style.display = e.target.value === 'text' ? 'flex' : 'none';
+                document.getElementById('audioInput').style.display = e.target.value === 'audio' ? 'flex' : 'none';
+            });
+        });
+
+    </script>
+
+    <script>
+        let mediaRecorder;
+        let chunks = [];
+        let recordedFile = null;
+
+        const recordBtn = document.getElementById("recordBtn");
+        const audioPreview = document.getElementById("audioPreview");
+
+        recordBtn.addEventListener("click", async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = e => chunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: "audio/mp3" });
+                    chunks = [];
+                    const url = URL.createObjectURL(blob);
+                    audioPreview.src = url;
+                    recordedFile = new File([blob], "temp.mp3", { type: "audio/mp3" });
+                };
+
+                mediaRecorder.start();
+                recordBtn.classList.add("mediaRecorderActive");
+                recordBtn.classList.remove("mediaRecorderUnactive");
+                recordBtn.textContent = "❚❚";
+            } else {
+                mediaRecorder.stop();
+                recordBtn.textContent = "▶";
+                recordBtn.classList.add("mediaRecorderUnactive");
+                recordBtn.classList.remove("mediaRecorderActive");
+            }
+        });
+
+    </script>
+
+    <script>
         var createTaskButton = document.querySelector(".createTaskButton");
 
-        createTaskButton.addEventListener("click", async () => {
-            const kod = `
-                <form id="taskForm" class="create-form" method="post">
-                    <span>Zadanie dla</span>
-                    <select name="name_and_surname" id="userSelect" required>
-                        <option>Ładowanie...</option>
-                    </select>
-                    <span>Opis zadania</span>
-                    <textarea name="task_content" placeholder="Podaj treść zadania" required></textarea>
-                    <span>Termin</span>
-                    <div class="box-deadlines">
-                        <input type="date" name="deadline_date" />
-                        <input type="time" name="deadline_time" />
-                    </div>
-                    <span>Ważność</span>
-                    <div class="box-priority">
-                        <input type="checkbox" name="priority" value="1"/>
-                        PRIORYTET
-                    </div> 
-                    <input type="submit" class="primary-btn" value="Wyślij" />
-                </form>
-            `;
-
-            showPopUp("info", "Utwórz zadanie", kod);
-
+        async function createTaskForm() {
             // teraz pobierz dane do selecta
             const select = document.getElementById("userSelect");
             const form = document.getElementById("taskForm");
@@ -214,6 +313,10 @@
                 e.preventDefault();
                 const formData = new FormData(form);
 
+                if (recordedFile) {
+                    formData.append("audio", recordedFile);
+                }
+
                 try {
                     const response = await fetch("php/tasks/createTask.php", {
                         method: "POST",
@@ -224,6 +327,7 @@
                     if (result.trim() === "OK") {
                         alert("Utworzono zadanie!");
                         form.reset();
+                        recordedFile = null;
                         fetchTasks2("checkCreatedTasks", "delegated");
                     } else {
                         alert("Błąd: " + result);
@@ -232,7 +336,9 @@
                     alert("Wystąpił błąd sieci: " + error.message);
                 }
             });
-        });
+        }
+
+        createTaskForm();
 
     </script>
 </body>

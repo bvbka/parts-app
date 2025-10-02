@@ -5,6 +5,57 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding-top: 90px;
+}
+
+.create-form .widget {
+    margin-top: 0;
+}
+
+.create-form .widget:last-of-type {
+    margin-bottom: 80px;
+}
+
+.taskContentType{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    scale: 0.9;
+    width: 100%;
+    border-top: 1.5px solid white;
+    border-bottom: 1.5px solid white;
+    margin: 5px 0;
+    padding: 2px 10px;
+}
+
+.mediaRecorderActive{
+    width: 70px;
+    height: 70px;
+    font-size: 30px;
+    border-radius: 100%;
+    line-height: 30px;
+    outline: none;
+    border: none;
+    background-color: rgb(235, 38, 38);
+    box-shadow: 0 0 16px 8px rgba(207, 68, 68, 0.404);
+    color: white;
+    margin: 10px 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.mediaRecorderUnactive{
+    width: 70px;
+    height: 70px;
+    font-size: 30px;
+    border-radius: 100%;
+    line-height: 30px;
+    outline: none;
+    border: none;
+    background-color: rgb(235, 38, 38);
+    color: white;
+    margin: 10px 0;
+    transition: all 0.2s ease-in-out;
 }
 
 .create-form select,
@@ -12,7 +63,8 @@
 .create-form input[type="number"] {
     width: 300px;
     font-size: 20px;
-    margin: 5px 0 20px 0;
+    /* margin: 5px 0 20px 0; */
+    margin: 5px 0 0 0;
     height: 45px;
 }
 
@@ -40,6 +92,14 @@
     margin: 5px 0 20px 0;
 }
 
+#audioInput{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .liters-before-input,
 .car-mileage-input {
     margin-bottom: 0px !important;
@@ -53,4 +113,29 @@
 
 .box-priority {
     margin: 5px 0 20px 0;
+    color: white;
+    scale: 0.8;
+}
+
+.box-priority input{
+    scale: 1.5;
+}
+
+#audioPreview::-webkit-media-controls-panel {
+  display: flex !important;
+  justify-content: center;
+}
+
+#audioPreview::-webkit-media-controls-current-time-display,
+#audioPreview::-webkit-media-controls-time-remaining-display,
+#audioPreview::-webkit-media-controls-mute-button,
+#audioPreview::-webkit-media-controls-volume-slider,
+#audioPreview::-webkit-media-controls-fullscreen-button,
+#audioPreview::-webkit-media-controls-timeline-container {
+  display: none !important;
+}
+
+#audioPreview::-webkit-media-controls-timeline {
+  display: block !important;
+  width: 100% !important;
 }

@@ -132,7 +132,15 @@ async function fetchTasks2(siteType, containerType) {
             secondTaskLine.classList.add("second-box-line");
 
             const taskSummary = document.createElement("span");
-            taskSummary.innerHTML = summary;
+            if (summary.includes("tasks_audios")) {
+                console.log(task);
+                const audioSummary = document.createElement("audio");
+                audioSummary.src = summary;
+                audioSummary.controls = "true";
+                taskSummary.append(audioSummary);
+            } else {
+                taskSummary.innerHTML = summary;
+            }
 
             secondTaskLine.append(taskSummary);
 

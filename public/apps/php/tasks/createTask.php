@@ -37,7 +37,7 @@ $task_deadline_date = $_POST["deadline_date"] ?? '';
 $task_deadline_time = $_POST["deadline_time"] ?? '';
 $task_priority = $_POST["priority"] ?? '0';
 
-if (!$name_and_surname || !$task_content) {
+if (!$name_and_surname) {
     http_response_code(400);
     echo "Brakuje danych";
     exit;
@@ -51,11 +51,27 @@ $result = mysqli_query($conn, "SELECT alias FROM users WHERE CONCAT(name, ' ', s
 $row = mysqli_fetch_assoc($result);
 $assignee = $row['alias'];
 
-//	task_id	reporter_alias	assignee_alias	summary	
+$uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/tasks_audios/";
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
+
+if (isset($_FILES['audio']) && $_FILES['audio']['error'] === UPLOAD_ERR_OK) {
+    $tmpName = $_FILES['audio']['tmp_name'];
+    $fileName = "task_" . $next_id . ".mp3";
+    $dest = $uploadDir . $fileName;
+
+    if (move_uploaded_file($tmpName, $dest)) {
+        $task_content = "/tasks_audios/" . $fileName;
+    } else {
+        http_response_code(500);
+        echo "Błąd przy zapisie pliku audio";
+        exit;
+    }
+}
 
 $sql = "INSERT INTO tasks (task_id, reporter_alias, assignee_alias, summary, status, creation_date, creation_time, deadline_date, deadline_time, priority) 
         VALUES ($next_id, '$alias', '$assignee', '$task_content', 'new', CURDATE(), DATE_FORMAT(NOW(), '%H:%i:%s'), '$task_deadline_date', '$task_deadline_time', $task_priority)";
-
 
 if (mysqli_query($conn, $sql)) {
     echo "OK";
@@ -63,5 +79,6 @@ if (mysqli_query($conn, $sql)) {
     http_response_code(500);
     echo "Błąd zapisu: " . mysqli_error($conn);
 }
+
 
 ?>
