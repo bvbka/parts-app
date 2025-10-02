@@ -17,13 +17,13 @@
             </div>
             <div class="app-title">Zadania</div>
         </div>
-        <div class="app-box" app="apps/fuel_app.html">
+        <div class="app-box admin" app="apps/fuel_app.html">
             <div class="app-icon">'
                 <img src="img/fuel_app_icon.png" />
             </div>
             <div class="app-title">Paliwo</div>
         </div>
-        <div class="app-box" app="apps/leaves_app.html">
+        <div class="app-box admin" app="apps/leaves_app.html">
             <div class="app-icon">
                 <img src="img/time.png"/>
             </div>
@@ -35,7 +35,7 @@
             </div>
             <div class="app-title">Rozliczenia</div>
         </div>
-        <div class="app-box" app="apps/settings.html">
+        <div class="app-box admin" app="apps/settings.html">
             <div class="app-icon">
                 <img src="img/settings.png"/>
             </div>
@@ -53,6 +53,10 @@
                         location.href = box.getAttribute("app");
                     },200);
                 });
+            }
+
+            if(box.classList.contains("admin") && localStorage.getItem("role") == "user"){
+                box.style.display = "none";
             }
         });
     </script>
