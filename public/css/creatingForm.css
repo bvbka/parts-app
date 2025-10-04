@@ -16,19 +16,6 @@
     margin-bottom: 80px;
 }
 
-.taskContentType{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    scale: 0.9;
-    width: 100%;
-    border-top: 1.5px solid white;
-    border-bottom: 1.5px solid white;
-    margin: 5px 0;
-    padding: 2px 10px;
-}
-
 .mediaRecorderActive{
     width: 70px;
     height: 70px;
@@ -75,14 +62,15 @@
 
 .create-form span {
     font-size: 24px;
-    color: white;
+    /* color: white; */
 }
 
 .create-form textarea {
-    width: 300px;
+    width: 270px;
     font-size: 20px;
     height: 60px;
     margin: 5px 0 20px 0;
+    border-radius: 10px;
 }
 
 .create-form .box-deadlines {
@@ -90,6 +78,13 @@
     display: flex;
     justify-content: space-evenly;
     margin: 5px 0 20px 0;
+}
+
+.box-deadlines-options{
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    width: 100%;
 }
 
 #audioInput{
@@ -112,7 +107,7 @@
 }
 
 .box-priority {
-    margin: 5px 0 20px 0;
+    margin: 5px 0 0 0;
     color: white;
     scale: 0.8;
 }
@@ -139,3 +134,73 @@
   display: block !important;
   width: 100% !important;
 }
+
+.taskContentType {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 5px 0;
+    padding: 2px 10px;
+    /* border-top: 1.5px solid white;
+    border-bottom: 1.5px solid white; */
+}
+
+.taskContentType label {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    /* padding: 10px 0; */
+    border-radius: 20px 0 0 20px; /* zaokrąglone tylko brzegi zewnętrzne */
+    /* border: 2px solid white; */
+    background-color: rgba(143, 128, 179, 0.432);
+    color: black;
+    font-weight: 600;
+    user-select: none;
+    transition: all 0.25s ease;
+    margin: 0; /* zerujemy margines */
+}
+
+.taskContentType label:last-child {
+    border-radius: 0 20px 20px 0;
+    border-left: none; /* żeby wyglądały jak jedno */
+}
+
+/* ukrywamy natywny radio input */
+.taskContentType input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    opacity: 0;
+}
+
+/* zaznaczony przycisk */
+.taskContentType label:has(input[type="radio"]:checked) {
+    background-color: rgb(235, 38, 38);
+    color: white;
+    /* border: none; */
+}
+
+/* span w środku — dziedziczy kolor */
+.taskContentType span {
+    color: inherit !important;
+    font-size: 20px;
+}
+
+.create-task-form-hr{
+    width: 100%;
+    margin: 5px 0;
+}
+
+.custom-datetime-label .custom-datetime-inputs {
+    display: none;
+    margin-left: 10px; /* opcjonalnie */
+    gap: 5px;
+}
+
+.custom-datetime-label input[type="radio"]:checked ~ .custom-datetime-inputs {
+    display: inline-flex;
+}
+

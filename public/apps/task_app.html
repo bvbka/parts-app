@@ -53,6 +53,7 @@
                 <div class="widget">
                     <div class="widget-text">
                         <span>Zadanie dla</span>
+                        <hr class="create-task-form-hr" />
                         <select name="name_and_surname" id="userSelect" required>
                             <option>Ładowanie...</option>
                         </select>
@@ -62,16 +63,18 @@
                 <div class="widget">
                     <div class="widget-text">
                         <span>Opis zadania</span>
+                        <hr class="create-task-form-hr" />
                         <div class="taskContentType">
                             <label>
                                 <input type="radio" name="inputType" value="text">
-                                Tekst
+                                <span>Tekst</span>
                             </label>
                             <label>
                                 <input type="radio" name="inputType" value="audio" checked>
-                                Audio
+                                <span>Audio</span>
                             </label>
                         </div>
+
 
                         <div id="textInput" style="display:none;">
                             <textarea name="task_content" placeholder="Wpisz treść zadania..."></textarea>
@@ -88,16 +91,111 @@
                 <div class="widget">
                     <div class="widget-text">
                         <span>Termin</span>
-                        <div class="box-deadlines">
-                            <input type="date" name="deadline_date" />
-                            <input type="time" name="deadline_time" />
+                        <hr class="create-task-form-hr" />
+                        <div class="box-deadlines-options">
+                            <label>
+                                <input type="radio" name="deadline_option" value="1h" checked>
+                                1 godzina
+                            </label>
+                            <label>
+                                <input type="radio" name="deadline_option" value="2h">
+                                2 godziny
+                            </label>
+                            <label>
+                                <input type="radio" name="deadline_option" value="full_day">
+                                Cały dzień (do 16:00)
+                            </label>
+                            <label>
+                                <input type="radio" name="deadline_option" value="custom_hours">
+                                Liczba godzin: 
+                                <input type="number" id="custom_hours_input" min="1" placeholder="Liczba godzin" style="width: 80px;">
+                            </label>
+                            <label>
+                                <label class="custom-datetime-label">
+                                    <input type="radio" name="deadline_option" value="custom_datetime">
+                                    Własny termin
+                                    <span class="custom-datetime-inputs">
+                                        <input type="date" id="custom_date_input">
+                                        <input type="time" id="custom_time_input">
+                                    </span>
+                                </label>
+                            </label>
+                            <label>
+                                <input type="radio" name="deadline_option" value="no_deadline">
+                                Brak terminu
+                            </label>
                         </div>
+
+                        <!-- pola które PHP i tak odbiera -->
+                        <input type="hidden" name="deadline_date" id="deadline_date">
+                        <input type="hidden" name="deadline_time" id="deadline_time">
                     </div>
                 </div>
+
+                <script>
+                    const form = document.getElementById('taskForm');
+                    const deadlineRadios = document.querySelectorAll('input[name="deadline_option"]');
+                    const hiddenDate = document.getElementById('deadline_date');
+                    const hiddenTime = document.getElementById('deadline_time');
+
+                    const customHoursInput = document.getElementById('custom_hours_input');
+                    const customDateInput = document.getElementById('custom_date_input');
+                    const customTimeInput = document.getElementById('custom_time_input');
+
+                    form.addEventListener('submit', (e) => {
+                        const now = new Date();
+                        const selectedRadio = document.querySelector('input[name="deadline_option"]:checked');
+                        if (!selectedRadio) return; // nic nie zaznaczone
+
+                        const selected = selectedRadio.value;
+                        let deadline = new Date(now);
+
+                        switch (selected) {
+                            case '1h':
+                                deadline.setHours(deadline.getHours() + 1);
+                                break;
+                            case '2h':
+                                deadline.setHours(deadline.getHours() + 2);
+                                break;
+                            case 'full_day':
+                                if (now.getHours() < 16) {
+                                    deadline.setHours(16, 0, 0, 0);
+                                } else {
+                                    deadline.setDate(deadline.getDate() + 1);
+                                    deadline.setHours(16, 0, 0, 0);
+                                }
+                                break;
+                            case 'custom_hours':
+                                let h = parseInt(customHoursInput.value) || 0;
+                                deadline.setHours(deadline.getHours() + h);
+                                break;
+                            case 'custom_datetime':
+                                if (customDateInput.value && customTimeInput.value) {
+                                    const [year, month, day] = customDateInput.value.split('-');
+                                    const [hours, minutes] = customTimeInput.value.split(':');
+                                    deadline = new Date(year, month - 1, day, hours, minutes);
+                                }
+                                break;
+                            case 'no_deadline':
+                                hiddenDate.value = '0000-00-00';
+                                hiddenTime.value = '00:00:00';
+                                return; // koniec funkcji
+                        }
+
+                        // ustawiamy pola dla PHP (lokalna data i godzina)
+                        hiddenDate.value = deadline.getFullYear() + '-' +
+                            String(deadline.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(deadline.getDate()).padStart(2, '0');
+
+                        hiddenTime.value = String(deadline.getHours()).padStart(2, '0') + ':' +
+                            String(deadline.getMinutes()).padStart(2, '0');
+                    });
+                </script>
 
                 <div class="widget">
                     <div class="widget-text">
                         <span>Ważność</span>
+                        <hr class="create-task-form-hr" />
                         <div class="box-priority">
                             <input type="checkbox" name="priority" value="1" />
                             Zadanie priorytetowe
